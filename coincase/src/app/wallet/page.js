@@ -3,12 +3,28 @@ import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Box, Text, VStack } from "@chakra-ui/react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/app/firebase";
 
-const Wallet = ({ params }) => {
-  const uid = params.uid;
-
+const Wallet = () => {
   const [wallet, setWallet] = useState({});
+  const [uid, setUID] = useState("");
 
+  // Checks if user is authenticated
+  useEffect(() => {
+    const listen = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User authenticated");
+        setUID(user.uid);
+      } else {
+        console.log("User not authenticated");
+      }
+    });
+
+    return () => listen();
+  }, []);
+
+  // Gets wallet info based on UID
   useEffect(() => {
     const getUser = async () => {
       const docRef = doc(db, "Users", uid);
@@ -26,13 +42,14 @@ const Wallet = ({ params }) => {
 
         setWallet(ordered_wallet);
       } else {
-        // docSnap.data() will be undefined in this case
-        console.log("No such document!");
+        console.log(uid + ": Cant find doc");
       }
     };
 
-    getUser();
-  }, []);
+    if (uid !== "") {
+      getUser();
+    }
+  }, [uid]);
 
   return (
     <Box
@@ -55,16 +72,18 @@ const Wallet = ({ params }) => {
       </Text>
       <VStack>
         {Object.keys(wallet).map((coinID, index) => {
-          return (
-            <Text
-              textShadow={"1px 1px 2px #222222"}
-              color="white"
-              fontSize="xl"
-              key={index}
-            >
-              {coinID}: {wallet[coinID]}
-            </Text>
-          );
+          if (wallet[coinID] != 0) {
+            return (
+              <Text
+                textShadow={"1px 1px 2px #222222"}
+                color="white"
+                fontSize="xl"
+                key={index}
+              >
+                {coinID}: {wallet[coinID]}
+              </Text>
+            );
+          }
         })}
       </VStack>
     </Box>
