@@ -27,15 +27,13 @@ import {
   InputLeftAddon,
   Icon,
   AbsoluteCenter,
-  Text
+  Text,
 } from "@chakra-ui/react";
 
-import {
-  ViewIcon,
-  ViewOffIcon,
-  PhoneIcon,
-  EmailIcon,
-} from "@chakra-ui/icons";
+import { auth } from "@/app/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
+import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
 
@@ -60,6 +58,18 @@ function SignUp() {
   const isValidPassword = (password) => {
     const metRequirements = checkPasswordRequirements(password);
     return metRequirements.every((req) => req);
+  };
+
+  const handleSignIn = () => {
+    console.log(formData.email);
+    console.log(formData.password);
+    signInWithEmailAndPassword(auth, formData.email, formData.password)
+      .then((userCredential) => {
+        console.log(userCredential);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -103,6 +113,7 @@ function SignUp() {
                 variant="flushed"
                 placeholder="Email"
                 name="email"
+                onChange={handleInput}
                 _placeholder={{ opacity: 0.8, color: "gray.500" }}
                 focusBorderColor="pink.400"
               />
@@ -129,7 +140,9 @@ function SignUp() {
               </InputRightElement>
             </InputGroup>
             <Center>
-              <Button colorScheme="pink">Sign In</Button>
+              <Button onClick={handleSignIn} colorScheme="pink">
+                Sign In
+              </Button>
             </Center>
           </VStack>
         </FormControl>
