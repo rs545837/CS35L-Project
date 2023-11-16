@@ -1,3 +1,5 @@
+/** @format */
+
 "use client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CoinList from "./coins/page";
@@ -21,7 +23,7 @@ import {
 function Landing() {
   return (
     <div>
-      <Container centerContent >
+      <Container centerContent>
         <Flex alignContent="center">
           <Box></Box>
           <Spacer />
