@@ -7,22 +7,40 @@ import Coin from "../coins/[coinId]/page";
 import Header from "../components/Header";
 import styled from "styled-components";
 import Sidebar from "../components/Sidebar";
+import { useState } from "react";
+import Setting from "../Setting/page";
+import Wallet2 from "../Wallet2/page";
+import Trade from "../Trade/page";
 
 export default function Home() {
   const queryClient = new QueryClient();
+  const [clickedTitle, setClickedTitle] = useState(null);
+
+  const handleNavItemClick = (title) => {
+    console.log(`NavItem clicked: ${title}`);
+    setClickedTitle(title);
+  };
+
+  // Map between titles and corresponding components
+  const titleComponentMap = {
+    Home: CoinList,
+    Setting: Setting,
+    Wallet2: Wallet2,
+    Trade: Trade,
+    // Add more mappings as needed
+  };
+
+  const DynamicComponent = titleComponentMap[clickedTitle];
   return (
-    <>
-      <Wrapper>
-        <Sidebar />
-        <MainContainer>
-          <Header />
-        </MainContainer>
-      </Wrapper>
-      <Wrapper></Wrapper>
-      <QueryClientProvider client={queryClient}>
-        <CoinList />
-      </QueryClientProvider>
-    </>
+    <Wrapper>
+      <Sidebar onItemClick={handleNavItemClick} />
+      <MainContainer>
+        <Header title={clickedTitle} />
+        <QueryClientProvider client={queryClient}>
+          {DynamicComponent && <DynamicComponent />}
+        </QueryClientProvider>
+      </MainContainer>
+    </Wrapper>
   );
 }
 

@@ -57,7 +57,7 @@ export function CoinPrice({ params, type }) {
     <>
       <div
         style={{
-          color: type === "change" ? (value < 0 ? "red" : "blue") : "black",
+          color: type === "change" ? (value < 0 ? "red" : "blue") : "white",
         }}
       >
         {value}
