@@ -1,4 +1,7 @@
+/** @format */
+
 "use client";
+
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
