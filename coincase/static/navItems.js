@@ -1,3 +1,5 @@
+/** @format */
+
 import {
   AiOutlinePieChart,
   AiOutlinePlusCircle,
@@ -22,7 +24,7 @@ export const navItems = [
     icon: <RiCoinsLine />,
   },
   {
-    title: "Setting",
+    title: "Settings",
     icon: <MdWeb />,
   },
   {
@@ -30,7 +32,7 @@ export const navItems = [
     icon: <AiOutlinePlusCircle />,
   },
   {
-    title: "Notifications",
+    title: "History",
     icon: <RiNotification3Line />,
   },
   {

@@ -14,13 +14,14 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@saas-ui/react": "^2.3.1",
     "@tanstack/react-query": "^5.8.2",
     "@tanstack/react-query-devtools": "^5.8.2",
     "axios": "^1.6.1",
     "cache": "^3.0.0",
     "clean": "^4.0.2",
     "firebase": "^10.6.0",
-    "framer-motion": "^10.16.4",
+    "framer-motion": "^6.5.1",
     "lottie-web": "^5.12.2",
     "next": "^14.0.2",
     "npm": "^10.2.3",
@@ -31,6 +32,7 @@
     "react-icons": "^4.12.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.18.0",
+    "saas-ui": "^1.0.26",
     "styled-components": "^6.1.1"
   },
   "devDependencies": {

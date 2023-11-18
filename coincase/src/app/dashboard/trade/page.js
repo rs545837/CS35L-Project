@@ -2,6 +2,6 @@
 
 "use client";
 
-export default function Trade() {
+export default function trade() {
   return <div>Trade</div>;
 }
