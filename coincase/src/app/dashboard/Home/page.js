@@ -8,38 +8,17 @@ import Header from "@/app/components/Header";
 import styled from "styled-components";
 import Sidebar from "@/app/components/Sidebar";
 import { useState } from "react";
-import Setting from "../setting/page";
+import Setting from "../settings/page";
 import Wallet2 from "../wallet2/page";
 import Trade from "../trade/page";
 
-export default function Home() {
+export default function home() {
   const queryClient = new QueryClient();
-  const [clickedTitle, setClickedTitle] = useState(null);
-
-  const handleNavItemClick = (title) => {
-    console.log(`NavItem clicked: ${title}`);
-    setClickedTitle(title);
-  };
-
-  // Map between titles and corresponding components
-  const titleComponentMap = {
-    Home: CoinList,
-    Setting: Setting,
-    Wallet2: Wallet2,
-    Trade: Trade,
-    // Add more mappings as needed
-  };
 
   return (
-    <Wrapper>
-      <Sidebar onItemClick={handleNavItemClick} />
-      <MainContainer>
-        <Header />
-        <QueryClientProvider client={queryClient}>
-          <CoinList />
-        </QueryClientProvider>
-      </MainContainer>
-    </Wrapper>
+    <QueryClientProvider client={queryClient}>
+      <CoinList />
+    </QueryClientProvider>
   );
 }
 

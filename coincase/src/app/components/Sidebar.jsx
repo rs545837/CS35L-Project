@@ -18,11 +18,11 @@ const Sidebar = ({onItemClick}) => {
       </LogoContainer>
       <NavItemsContainer>
         {navItems.map(item => (
-          <Link href={item.title === 'dashboard/Home' ? '/' : `/dashboard/${item.title.toLowerCase()}`} key={item.title}>
-          <NavItem  key={item.title} onClick={() => { setActiveIcon(item.title); onItemClick(item.title); }}>
-            <NavIcon style={{ color: item.title === activeIcon && '#3773f5' }}>
-              {item.icon}
-            </NavIcon>
+          <Link href={item.title === 'dashboard/home' ? '/' : `/dashboard/${item.title.toLowerCase()}`} key={item.title}>
+           <NavItem key={item.title} onClick={() => { setActiveIcon(item.title); }}>
+      <NavIcon style={{ color: item.title === activeIcon && '#3773f5' }}>
+        {item.icon}
+      </NavIcon>
             <NavTitle>{item.title}</NavTitle>
           </NavItem>
           </Link>
