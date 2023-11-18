@@ -1,4 +1,7 @@
+"use client";
 import axios from "axios";
+import { createContext } from "react";
+import { useQuery } from "react-query";
 
 const BASE_URL = "https://api.coinpaprika.com/v1";
 

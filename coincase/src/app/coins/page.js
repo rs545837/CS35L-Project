@@ -18,7 +18,7 @@ const Div = styled.div`
   text-align: center;
   overflow: overlay;
   padding: 0;
-
+  color: white;
   display: flex;
 `;
 
