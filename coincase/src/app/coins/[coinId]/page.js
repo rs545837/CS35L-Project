@@ -30,6 +30,8 @@ export function CoinPrice({ params, type }) {
   let value;
 
   switch (type) {
+    case "only":
+      value = tickersData?.quotes.USD.price.toFixed(2);
     case "price":
       value = "$" + tickersData?.quotes.USD.price.toFixed(2);
       break;
@@ -53,7 +55,9 @@ export function CoinPrice({ params, type }) {
       break;
   }
 
-  return (
+  return type === "only" ? (
+    value
+  ) : (
     <>
       <div
         style={{
