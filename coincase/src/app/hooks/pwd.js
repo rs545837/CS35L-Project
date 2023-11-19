@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 
-const usePasswordMatch = () => {
+export default function usePasswordMatch() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMatch, setIsMatch] = useState(true);
@@ -24,6 +24,4 @@ const usePasswordMatch = () => {
     handlePasswordChange,
     handleConfirmPasswordChange,
   };
-};
-
-export default usePasswordMatch;
+}
