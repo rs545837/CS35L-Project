@@ -86,7 +86,7 @@ function Landing() {
       <Link href="/Auth/SignIn">Sign In</Link>
       <br></br>
 
-      <Link href="/dashboard/home">Home</Link>
+      <Link href="/dashboard/Home">Home</Link>
 
       <CryptoWalletAnimation />
     </div>
