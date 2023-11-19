@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchCoins } from "../api";
 import { CoinPrice } from "./[coinId]/page";
 import { styled } from "styled-components";
+import Balance from "../dashboard/home/balance";
 
 const Row = styled.div`
   margin-left: 10px;
@@ -47,6 +48,7 @@ export default function CoinList() {
   const { isLoading, data } = useQuery("allCoins", fetchCoins);
   return (
     <div>
+      <Balance user="user" data={data} />
       <Row>
         <Div>Name</Div>
         <Div>Price</Div> <Div>Change</Div> <Div>Market Cap</Div>

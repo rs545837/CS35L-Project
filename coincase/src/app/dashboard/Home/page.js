@@ -11,6 +11,7 @@ import { useState } from "react";
 import Setting from "../settings/page";
 import Wallet2 from "../wallet2/page";
 import Trade from "../trade/page";
+import Balance from "./balance";
 
 export default function home() {
   const queryClient = new QueryClient();
