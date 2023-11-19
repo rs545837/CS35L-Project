@@ -1,6 +1,6 @@
-import {easeInOut, motion} from 'framer-motion';
+import { motion } from "framer-motion";
 
-import React from 'react'
+import React from "react";
 
 function Logo() {
   return (
@@ -28,7 +28,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -46,7 +46,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.4,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -64,7 +64,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.6,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -82,7 +82,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.7,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -100,7 +100,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.7,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -119,7 +119,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.8,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -138,7 +138,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.9,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -157,7 +157,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.9,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -174,7 +174,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 1.9,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -191,7 +191,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -208,7 +208,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -225,7 +225,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -242,7 +242,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -259,7 +259,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2.2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -276,7 +276,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2.2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -293,7 +293,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2.2,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -310,7 +310,7 @@ function Logo() {
             transition: {
               duration: 3.5,
               delay: 2.5,
-              ease: easeInOut,
+              ease: "easeInOut",
             },
           }}
         ></motion.circle>
@@ -319,4 +319,4 @@ function Logo() {
   );
 }
 
-export default Logo
+export default Logo;
