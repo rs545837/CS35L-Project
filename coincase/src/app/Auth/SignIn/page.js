@@ -1,6 +1,6 @@
 "use client";
 
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -28,6 +28,9 @@ import {
   Icon,
   AbsoluteCenter,
   Text,
+  Alert,
+  AlertIcon,
+  AlertTitle,
 } from "@chakra-ui/react";
 
 import { auth } from "@/app/firebase";
@@ -36,14 +39,26 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
+import { redirect } from "next/navigation";
+import { useAuth } from "../AuthContext";
 
 function SignIn() {
+  const { isLoading, authUser } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [isError, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
+
+  useEffect(() => {
+    if (authUser && !isLoading) {
+        redirect("/dashboard/Home")
+    }
+  }, [isLoading, authUser])
 
   const handleFocus = () => {
     if (!focusPassword) {
@@ -65,12 +80,16 @@ function SignIn() {
     console.log(formData.password);
     signInWithEmailAndPassword(auth, formData.email, formData.password)
       .then((userCredential) => {
-        console.log(userCredential);
+        //console.log(userCredential);
         // Logged in, navigate to dashboard
+        setError(false)
+        setErrorMsg("")
       })
       .catch((error) => {
         console.log(error);
         // Issue logging in, display error code
+        setError(true)
+        setErrorMsg("Invalid Credentials")
       });
   };
 
@@ -118,6 +137,12 @@ function SignIn() {
               <Button onClick={handleSignIn} colorScheme="pink">
                 Sign In
               </Button>
+            </Center>
+            <Center>
+              {isError && <Alert status='error'>
+                <AlertIcon />
+                <AlertTitle>{errorMsg}</AlertTitle>
+              </Alert>}
             </Center>
           </VStack>
         </FormControl>
