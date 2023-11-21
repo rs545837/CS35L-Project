@@ -1,6 +1,6 @@
 "use client";
 
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -26,7 +26,11 @@ import {
   InputLeftElement,
   InputLeftAddon,
   Icon,
-  Text
+  Text,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 
 import {
@@ -37,13 +41,23 @@ import {
   ViewOffIcon,
   PhoneIcon,
   EmailIcon,
+  CalendarIcon,
+  LockIcon,
 } from "@chakra-ui/icons";
 
 import { BsFillPersonVcardFill } from "react-icons/bs";
 // import Link from "next/link";
 import { Link } from "@chakra-ui/next-js";
 
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { auth, db } from "@/app/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../AuthContext";
+import { redirect } from "next/navigation";
+
 function SignUp() {
+  const { isLoading, authUser } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,7 +65,16 @@ function SignUp() {
     password: "",
     firstName: "",
     lastName: "",
+    dateOfBirth: null,
   });
+  const [isError, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
+
+  useEffect(() => {
+    if (authUser && !isLoading) {
+        redirect("/dashboard/Home")
+    }
+  }, [isLoading, authUser])
 
   const handleFocus = () => {
     if (!focusPassword) {
@@ -67,7 +90,6 @@ function SignUp() {
     } else if (e.target.name == "password" && e.target.value === "") {
       setFocusPassword(false);
     }
-    console.log(formData.password);
   };
 
   const checkPasswordRequirements = (password) => {
@@ -82,10 +104,63 @@ function SignUp() {
     return requirements.map((regex) => regex.test(password));
   };
 
-  const isValidPassword = (password) => {
-    const metRequirements = checkPasswordRequirements(password);
-    return metRequirements.every((req) => req);
+  const isValidInput = (email, password, firstName, lastName, dateOfBirth) => {
+    let validPassword = checkPasswordRequirements(password).every((req) => req);
+    // TODO: implement logic for validating input
+    return true
   };
+
+  const createUserInUsersCollection = async (user) => {
+    // This is for creating the user in firestore on sign-up
+    try {
+        await setDoc(doc(db, "users", user.uid), {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            balance: 0,
+            date_of_birth: Timestamp.fromDate(new Date(formData.dateOfBirth)),
+            wallet: {
+              btc: 0,
+              eth: 0,
+              usdt: 0,
+              bnb: 0,
+              xrp: 0,
+              usdc: 0,
+              sol: 0,
+              steth: 0,
+              ada: 0,
+              doge: 0,
+            },
+            transaction_history: [],
+        })
+    } catch (err) {
+        // TODO: Figure out how to handle this error
+    }
+  }
+
+  const handleSignUp = () => {
+    if (!isValidInput()) {
+      // do not proceed, display error message
+      // set error message...
+      return
+    }
+
+    createUserWithEmailAndPassword(auth, formData.email, formData.password)
+        .then((userCredential) => {
+            setError(false)
+            setErrorMsg("")
+            // Signed up
+            const user = userCredential.user;
+            
+            const promise = createUserInUsersCollection(user)
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+
+            setError(true)
+            setErrorMsg("Error Creating Account")
+        });
+  }
 
   return (
     <div>
@@ -102,6 +177,7 @@ function SignUp() {
                   variant="flushed"
                   placeholder="First Name"
                   name="firstName"
+                  onChange={handleInput}
                   _placeholder={{ opacity: 0.8, color: "gray.500" }}
                   focusBorderColor="pink.400"
                 />
@@ -114,6 +190,7 @@ function SignUp() {
                   variant="flushed"
                   placeholder="Last Name"
                   name="lastName"
+                  onChange={handleInput}
                   _placeholder={{ opacity: 0.8, color: "gray.500" }}
                   focusBorderColor="pink.400"
                 />
@@ -121,12 +198,14 @@ function SignUp() {
             </HStack>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
-                <PhoneIcon color="pink.300" />
+                <CalendarIcon color="pink.300" />
               </InputLeftElement>
               <Input
-                type="tel"
-                placeholder="Phone Number"
+                type="date"
+                placeholder="Date of Birth"
+                name="dateOfBirth"
                 variant="flushed"
+                onChange={handleInput}
                 _placeholder={{ opacity: 0.8, color: "gray.500" }}
                 focusBorderColor="pink.400"
               />
@@ -139,11 +218,15 @@ function SignUp() {
                 variant="flushed"
                 placeholder="Email"
                 name="email"
+                onChange={handleInput}
                 _placeholder={{ opacity: 0.8, color: "gray.500" }}
                 focusBorderColor="pink.400"
               />
             </InputGroup>
             <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <LockIcon color="pink.300" />
+              </InputLeftElement>
               <Input
                 variant="flushed"
                 type={showPassword ? "text" : "password"}
@@ -246,7 +329,13 @@ function SignUp() {
               </Box>
             </Collapse>
             <Center>
-              <Button colorScheme="pink">Sign Up</Button>
+              <Button colorScheme="pink" onClick={handleSignUp}>Sign Up</Button>
+            </Center>
+            <Center>
+              {isError && <Alert status='error'>
+                <AlertIcon />
+                <AlertTitle>{errorMsg}</AlertTitle>
+              </Alert>}
             </Center>
           </VStack>
         </FormControl>
