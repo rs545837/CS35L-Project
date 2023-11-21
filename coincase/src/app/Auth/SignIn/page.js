@@ -37,7 +37,7 @@ import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
 
-function SignUp() {
+function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -66,45 +66,20 @@ function SignUp() {
     signInWithEmailAndPassword(auth, formData.email, formData.password)
       .then((userCredential) => {
         console.log(userCredential);
+        // Logged in, navigate to dashboard
       })
       .catch((error) => {
         console.log(error);
+        // Issue logging in, display error code
       });
   };
 
   return (
     <div>
       <Container w="750px" centerContent>
-        <h1>Create An Account!</h1>
+        <h1>Sign In</h1>
         <FormControl>
           <VStack spacing={5}>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <PhoneIcon color="pink.300" />
-              </InputLeftElement>
-              <Input
-                type="tel"
-                placeholder="Phone Number"
-                variant="flushed"
-                _placeholder={{ opacity: 0.8, color: "gray.500" }}
-                focusBorderColor="pink.400"
-              />
-            </InputGroup>
-            <Box position="relative" w="100%">
-              <Divider borderWidth="2px" />
-              <Center
-                position="absolute"
-                top="50%"
-                left="50%"
-                transform="translate(-50%, -50%)"
-                px="4"
-                bg="white"
-                fontWeight="bold"
-                color="pink.500"
-              >
-                Or
-              </Center>
-            </Box>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
                 <EmailIcon color="pink.300" />
@@ -158,4 +133,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignIn;
