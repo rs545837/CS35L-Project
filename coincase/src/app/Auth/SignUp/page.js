@@ -1,6 +1,6 @@
 "use client";
 
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -52,8 +52,12 @@ import { Link } from "@chakra-ui/next-js";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { auth, db } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../AuthContext";
+import { redirect } from "next/navigation";
 
 function SignUp() {
+  const { isLoading, authUser } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,6 +69,12 @@ function SignUp() {
   });
   const [isError, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
+
+  useEffect(() => {
+    if (authUser && !isLoading) {
+        redirect("/dashboard/Home")
+    }
+  }, [isLoading, authUser])
 
   const handleFocus = () => {
     if (!focusPassword) {
