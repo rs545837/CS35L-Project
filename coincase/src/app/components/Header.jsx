@@ -1,7 +1,25 @@
 import React from "react";
 import styled from "styled-components";
+import { auth } from "@/app/firebase"
+import { signOut } from "firebase/auth"
+import { redirect } from "next/navigation";
 
 const Header = ({ title }) => {
+  function handleSignOut() {
+    let success = false; // Using this to prevent an error
+    signOut(auth).then(() => {
+        // Sign-out successful.
+        success = true;
+    }).catch((error) => {
+        // An error happened.
+        redirect("/Auth/SignIn")
+    });
+
+    if (success) {
+      redirect("/Auth/SignIn")
+    }
+  }
+
   return (
     <Wrapper>
       <Title>{title}</Title>
@@ -10,6 +28,7 @@ const Header = ({ title }) => {
           Buy / Sell
         </Button>
         <Button>Send / Receive</Button>
+        <Button onClick={handleSignOut}>Sign Out</Button>
       </ButtonsContainer>
     </Wrapper>
   );
