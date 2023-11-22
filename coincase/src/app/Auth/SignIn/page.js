@@ -43,7 +43,7 @@ import { redirect } from "next/navigation";
 import { useAuth } from "../AuthContext";
 
 function SignIn() {
-  const { isLoading, authUser } = useAuth()
+  const { isLoading, authUser } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
@@ -51,14 +51,14 @@ function SignIn() {
     email: "",
     password: "",
   });
-  const [isError, setError] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
+  const [isError, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (authUser && !isLoading) {
-        redirect("/dashboard/Home")
+      redirect("/dashboard/home");
     }
-  }, [isLoading, authUser])
+  }, [isLoading, authUser]);
 
   const handleFocus = () => {
     if (!focusPassword) {
@@ -82,14 +82,14 @@ function SignIn() {
       .then((userCredential) => {
         //console.log(userCredential);
         // Logged in, navigate to dashboard
-        setError(false)
-        setErrorMsg("")
+        setError(false);
+        setErrorMsg("");
       })
       .catch((error) => {
         console.log(error);
         // Issue logging in, display error code
-        setError(true)
-        setErrorMsg("Invalid Credentials")
+        setError(true);
+        setErrorMsg("Invalid Credentials");
       });
   };
 
@@ -139,10 +139,12 @@ function SignIn() {
               </Button>
             </Center>
             <Center>
-              {isError && <Alert status='error'>
-                <AlertIcon />
-                <AlertTitle>{errorMsg}</AlertTitle>
-              </Alert>}
+              {isError && (
+                <Alert status="error">
+                  <AlertIcon />
+                  <AlertTitle>{errorMsg}</AlertTitle>
+                </Alert>
+              )}
             </Center>
           </VStack>
         </FormControl>
