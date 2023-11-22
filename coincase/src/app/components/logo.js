@@ -4,9 +4,8 @@ import React from "react";
 
 function Logo() {
   return (
-    <svg
+    <motion.svg
       viewBox="0 0 800 800"
-      //   style={{ width: "200px", height: "200px", marginRight: "10px" }}
     >
       <defs>
         <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cccoil-grad">
@@ -26,7 +25,7 @@ function Logo() {
           animate={{
             strokeDasharray: "1287 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.2,
               ease: "easeInOut",
             },
@@ -44,7 +43,7 @@ function Logo() {
             strokeDasharray: "1144 1970",
             opacity: 0.97,
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.4,
               ease: "easeInOut",
             },
@@ -62,7 +61,7 @@ function Logo() {
             strokeDasharray: "1009 1970",
             opacity: 0.87,
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.6,
               ease: "easeInOut",
             },
@@ -80,7 +79,7 @@ function Logo() {
             strokeDasharray: "883 1970",
             opacity: 0.87,
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.7,
               ease: "easeInOut",
             },
@@ -98,7 +97,7 @@ function Logo() {
             opacity: 0.87,
             strokeDasharray: "765 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.7,
               ease: "easeInOut",
             },
@@ -117,7 +116,7 @@ function Logo() {
 
             strokeDasharray: "656 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.8,
               ease: "easeInOut",
             },
@@ -136,7 +135,7 @@ function Logo() {
 
             strokeDasharray: "555 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.9,
               ease: "easeInOut",
             },
@@ -155,7 +154,7 @@ function Logo() {
 
             strokeDasharray: "462 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.9,
               ease: "easeInOut",
             },
@@ -172,7 +171,7 @@ function Logo() {
           animate={{
             strokeDasharray: "378 1970",
             transition: {
-              duration: 3.5,
+              duration: 3,
               delay: 1.9,
               ease: "easeInOut",
             },
@@ -189,8 +188,8 @@ function Logo() {
           animate={{
             strokeDasharray: "303 1970",
             transition: {
-              duration: 3.5,
-              delay: 2,
+              duration: 3,
+              delay: 1,
               ease: "easeInOut",
             },
           }}
@@ -206,8 +205,8 @@ function Logo() {
           animate={{
             strokeDasharray: "235 1970",
             transition: {
-              duration: 3.5,
-              delay: 2,
+              duration: 3,
+              delay: 1,
               ease: "easeInOut",
             },
           }}
@@ -223,8 +222,8 @@ function Logo() {
           animate={{
             strokeDasharray: "177 1970",
             transition: {
-              duration: 3.5,
-              delay: 2,
+              duration: 3,
+              delay: 1,
               ease: "easeInOut",
             },
           }}
@@ -240,8 +239,8 @@ function Logo() {
           animate={{
             strokeDasharray: "126 1970",
             transition: {
-              duration: 3.5,
-              delay: 2,
+              duration: 3,
+              delay: 1,
               ease: "easeInOut",
             },
           }}
@@ -257,8 +256,8 @@ function Logo() {
           animate={{
             strokeDasharray: "84 1970",
             transition: {
-              duration: 3.5,
-              delay: 2.2,
+              duration: 3,
+              delay: 1.2,
               ease: "easeInOut",
             },
           }}
@@ -274,8 +273,8 @@ function Logo() {
           animate={{
             strokeDasharray: "50 1970",
             transition: {
-              duration: 3.5,
-              delay: 2.2,
+              duration: 3,
+              delay: 1.2,
               ease: "easeInOut",
             },
           }}
@@ -291,8 +290,8 @@ function Logo() {
           animate={{
             strokeDasharray: "25 1970",
             transition: {
-              duration: 3.5,
-              delay: 2.2,
+              duration: 3,
+              delay: 1.2,
               ease: "easeInOut",
             },
           }}
@@ -308,14 +307,14 @@ function Logo() {
           animate={{
             strokeDasharray: "8 1970",
             transition: {
-              duration: 3.5,
-              delay: 2.5,
+              duration: 3,
+              delay: 1.5,
               ease: "easeInOut",
             },
           }}
         ></motion.circle>
       </g>
-    </svg>
+    </motion.svg>
   );
 }
 
