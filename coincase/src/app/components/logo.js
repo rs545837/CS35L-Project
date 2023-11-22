@@ -168,7 +168,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 1037"
           transform="rotate(180, 400, 400)"
-          opacity="0.38"
+          opacity="0"
           animate={{
             strokeDasharray: "378 1970",
             transition: {
@@ -185,7 +185,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 933"
           transform="rotate(200, 400, 400)"
-          opacity="0.46"
+          opacity="0"
           animate={{
             strokeDasharray: "303 1970",
             transition: {
@@ -202,7 +202,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 829"
           transform="rotate(220, 400, 400)"
-          opacity="0.42"
+          opacity="0"
           animate={{
             strokeDasharray: "235 1970",
             transition: {
@@ -219,7 +219,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 726"
           transform="rotate(240, 400, 400)"
-          opacity="0.44"
+          opacity="0"
           animate={{
             strokeDasharray: "177 1970",
             transition: {
@@ -236,7 +236,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 622"
           transform="rotate(260, 400, 400)"
-          opacity="0.54"
+          opacity="0"
           animate={{
             strokeDasharray: "126 1970",
             transition: {
@@ -253,7 +253,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 518"
           transform="rotate(280, 400, 400)"
-          opacity="0.28"
+          opacity="0"
           animate={{
             strokeDasharray: "84 1970",
             transition: {
@@ -270,7 +270,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 415"
           transform="rotate(300, 400, 400)"
-          opacity="0.32"
+          opacity="0"
           animate={{
             strokeDasharray: "50 1970",
             transition: {
@@ -287,7 +287,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 311"
           transform="rotate(320, 400, 400)"
-          opacity="0.3"
+          opacity="0"
           animate={{
             strokeDasharray: "25 1970",
             transition: {
@@ -304,7 +304,7 @@ function Logo() {
           stroke-width="6"
           stroke-dasharray="0 207"
           transform="rotate(340, 400, 400)"
-          opacity="0.23"
+          opacity="0"
           animate={{
             strokeDasharray: "8 1970",
             transition: {
