@@ -36,11 +36,12 @@ import {
 import { auth } from "@/app/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon } from "@chakra-ui/icons";
+import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon,LockIcon } from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
 import { redirect } from "next/navigation";
 import { useAuth } from "../AuthContext";
+import { motion } from "framer-motion";
 
 function SignIn() {
   const { isLoading, authUser } = useAuth();
@@ -113,6 +114,9 @@ function SignIn() {
               />
             </InputGroup>
             <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <LockIcon color="pink.300" />
+              </InputLeftElement>
               <Input
                 variant="flushed"
                 type={showPassword ? "text" : "password"}
@@ -134,7 +138,22 @@ function SignIn() {
               </InputRightElement>
             </InputGroup>
             <Center>
-              <Button onClick={handleSignIn} colorScheme="pink">
+              <Button
+                as={motion.button}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"pink.400"}
+                href={"#"}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#F687B3",
+                }}
+                whileTap={{
+                  scale: 0.9,
+                }}
+                onClick={handleSignIn}
+              >
                 Sign In
               </Button>
             </Center>

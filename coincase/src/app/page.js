@@ -134,7 +134,9 @@ function Landing() {
               scale: 1,
               transition: {
                 delay: 11,
-                duration: 1,
+                type: "spring",
+                damping: 9,
+                stiffness: 80
               },
             }}
           >

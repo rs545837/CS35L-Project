@@ -54,6 +54,8 @@ import { auth, db } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../AuthContext";
 import { redirect } from "next/navigation";
+import { motion } from "framer-motion";
+
 
 function SignUp() {
   const { isLoading, authUser } = useAuth()
@@ -329,19 +331,41 @@ function SignUp() {
               </Box>
             </Collapse>
             <Center>
-              <Button colorScheme="pink" onClick={handleSignUp}>Sign Up</Button>
+              <Button
+                as={motion.button}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"pink.400"}
+                href={"#"}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#F687B3",
+                }}
+                whileTap={{
+                  scale: 0.9,
+                }}
+                onClick={handleSignUp}
+              >
+                Sign Up
+              </Button>
             </Center>
             <Center>
-              {isError && <Alert status='error'>
-                <AlertIcon />
-                <AlertTitle>{errorMsg}</AlertTitle>
-              </Alert>}
+              {isError && (
+                <Alert status="error">
+                  <AlertIcon />
+                  <AlertTitle>{errorMsg}</AlertTitle>
+                </Alert>
+              )}
             </Center>
           </VStack>
         </FormControl>
         <Text>
           Already have an account?{""}
-          <Link href="/Auth/SignIn" color="pink.300" > Sign in.</Link>
+          <Link href="/Auth/SignIn" color="pink.300">
+            {" "}
+            Sign in.
+          </Link>
         </Text>
       </Container>
     </div>
