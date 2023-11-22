@@ -2,7 +2,7 @@
 
 "use client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import CoinList from "./coins/page";
+import CoinList from "./dashboard/coins/page";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
@@ -19,11 +19,14 @@ import {
   Box,
   Spacer,
 } from "@chakra-ui/react";
+import Header from "./header";
+import Home from "./coins/page";
 
 function Landing() {
   return (
     <div>
       <Container centerContent>
+        <Header />
         <Flex alignContent="center">
           <Box></Box>
           <Spacer />
@@ -81,13 +84,6 @@ function Landing() {
         </Flex>
         <Logo />
       </Container>
-      <Link href="/Auth/SignUp">Sign Up</Link>
-      <br></br>
-      <Link href="/Auth/SignIn">Sign In</Link>
-      <br></br>
-
-      <Link href="/dashboard/home">Home</Link>
-
       <CryptoWalletAnimation />
     </div>
   );

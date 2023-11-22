@@ -27,20 +27,4 @@ export const navItems = [
     title: "Settings",
     icon: <MdWeb />,
   },
-  {
-    title: "Learn and earn",
-    icon: <AiOutlinePlusCircle />,
-  },
-  {
-    title: "History",
-    icon: <RiNotification3Line />,
-  },
-  {
-    title: "Invite Friends",
-    icon: <BsPersonPlus />,
-  },
-  {
-    title: "Send a gift",
-    icon: <AiOutlineGift />,
-  },
 ];

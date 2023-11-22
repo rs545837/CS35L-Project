@@ -20,7 +20,7 @@ export const StyledLink = styled(Link)`
 `;
 const CoinWrapper = styled.div`
   background-color: white;
-  height: 100vh;
+  height: 80vh;
   padding: 24px 128px;
 `;
 

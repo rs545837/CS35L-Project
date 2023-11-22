@@ -24,11 +24,8 @@ const Header = ({ title }) => {
     <Wrapper>
       <Title>{title}</Title>
       <ButtonsContainer>
-        <Button style={{ backgroundColor: "#3773f5", color: "#000" }}>
-          Buy / Sell
-        </Button>
-        <Button>Send / Receive</Button>
-        <Button onClick={handleSignOut}>Sign Out</Button>
+        <Button style={{ backgroundColor: "#3773f5", color: "#000" }} onClick={handleSignOut}>Sign Out</Button>
+
       </ButtonsContainer>
     </Wrapper>
   );

@@ -7,7 +7,7 @@ import axios from "axios";
 
 const ChartContainer = styled.div`
   flex-basis: 50%;
-  width: 100%;
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: center;

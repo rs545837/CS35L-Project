@@ -1,8 +1,12 @@
+
+import { CoinPrice } from "@/app/dashboard/coins/[coinId]/page";
+
 import { useAuth } from "@/app/Auth/AuthContext";
 import { CoinPrice } from "@/app/coins/[coinId]/page";
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
+
 
 export default function Balance({ user, data }) {
   const {authUser} = useAuth()
