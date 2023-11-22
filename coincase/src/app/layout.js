@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import QueryProvider from "./queryProvider.js";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
+import { AuthUserProvider } from "./Auth/AuthContext.js";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -17,9 +18,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <QueryProvider>
-          <CacheProvider>
-            <ChakraProvider>{children}</ChakraProvider>
-          </CacheProvider>
+          <AuthUserProvider>
+            <CacheProvider>
+              <ChakraProvider>{children}</ChakraProvider>
+            </CacheProvider>
+          </AuthUserProvider>
         </QueryProvider>
       </body>
     </html>

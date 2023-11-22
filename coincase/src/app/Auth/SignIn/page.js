@@ -1,6 +1,6 @@
 "use client";
 
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -28,6 +28,9 @@ import {
   Icon,
   AbsoluteCenter,
   Text,
+  Alert,
+  AlertIcon,
+  AlertTitle,
 } from "@chakra-ui/react";
 
 import { auth } from "@/app/firebase";
@@ -36,14 +39,26 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
+import { redirect } from "next/navigation";
+import { useAuth } from "../AuthContext";
 
-function SignUp() {
+function SignIn() {
+  const { isLoading, authUser } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [isError, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
+
+  useEffect(() => {
+    if (authUser && !isLoading) {
+        redirect("/dashboard/Home")
+    }
+  }, [isLoading, authUser])
 
   const handleFocus = () => {
     if (!focusPassword) {
@@ -65,46 +80,25 @@ function SignUp() {
     console.log(formData.password);
     signInWithEmailAndPassword(auth, formData.email, formData.password)
       .then((userCredential) => {
-        console.log(userCredential);
+        //console.log(userCredential);
+        // Logged in, navigate to dashboard
+        setError(false)
+        setErrorMsg("")
       })
       .catch((error) => {
         console.log(error);
+        // Issue logging in, display error code
+        setError(true)
+        setErrorMsg("Invalid Credentials")
       });
   };
 
   return (
     <div>
       <Container w="750px" centerContent>
-        <h1>Create An Account!</h1>
+        <h1>Sign In</h1>
         <FormControl>
           <VStack spacing={5}>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <PhoneIcon color="pink.300" />
-              </InputLeftElement>
-              <Input
-                type="tel"
-                placeholder="Phone Number"
-                variant="flushed"
-                _placeholder={{ opacity: 0.8, color: "gray.500" }}
-                focusBorderColor="pink.400"
-              />
-            </InputGroup>
-            <Box position="relative" w="100%">
-              <Divider borderWidth="2px" />
-              <Center
-                position="absolute"
-                top="50%"
-                left="50%"
-                transform="translate(-50%, -50%)"
-                px="4"
-                bg="white"
-                fontWeight="bold"
-                color="pink.500"
-              >
-                Or
-              </Center>
-            </Box>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
                 <EmailIcon color="pink.300" />
@@ -144,6 +138,12 @@ function SignUp() {
                 Sign In
               </Button>
             </Center>
+            <Center>
+              {isError && <Alert status='error'>
+                <AlertIcon />
+                <AlertTitle>{errorMsg}</AlertTitle>
+              </Alert>}
+            </Center>
           </VStack>
         </FormControl>
         <Text>
@@ -158,4 +158,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignIn;

@@ -4,15 +4,21 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Header from "@/app/components/Header";
 import styled from "styled-components";
 import Sidebar from "../components/Sidebar";
+import ProtectedRoute from "../Auth/ProtectedRoute";
+import { AuthUserProvider } from "../Auth/AuthContext";
 
 export default function dashboard({ children }) {
   return (
     <Wrapper>
-      <Sidebar />
-      <MainContainer>
-        <Header />
-        <Section>{children}</Section>
-      </MainContainer>
+      <AuthUserProvider>
+        <ProtectedRoute>
+          <Sidebar />
+          <MainContainer>
+            <Header />
+            <Section>{children}</Section>
+          </MainContainer>
+        </ProtectedRoute>
+      </AuthUserProvider>
     </Wrapper>
   );
 }
