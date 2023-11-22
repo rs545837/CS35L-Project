@@ -24,33 +24,6 @@ import Header from "./header";
 import Home from "./coins/page";
 
 function Landing() {
-  const variants = {
-    hidden: {
-      opacity: 0,
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.5,
-        staggerChildren: 0.5,
-      },
-    },
-  };
-
-  const textAnimation = {
-    hidden: {
-      opacity: 0,
-      scale: 0,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 1,
-        ease: "easeInOut",
-      },
-    },
-  };
 
   return (
     <div>
@@ -63,7 +36,6 @@ function Landing() {
               as={motion.div}
               initial="hidden"
               animate="visible"
-              variants={variants}
             >
               <Text
                 as={motion.text}
@@ -172,6 +144,14 @@ function Landing() {
                 delay:11,
                 duration:1,
               }
+            }}
+            whileHover={{
+              scale:1.1,
+              opacity:0.8,
+            }}
+            whileTap={{
+              scale: 0.9,
+            
             }}
           >
             Get Started
