@@ -1,6 +1,7 @@
 /** @format */
 
 "use client";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CoinList from "./dashboard/coins/page";
 import Link from "next/link";
@@ -24,6 +25,7 @@ import Header from "./header";
 import Home from "./coins/page";
 
 function Landing() {
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
 
   return (
     <div>
@@ -32,11 +34,7 @@ function Landing() {
         <Flex alignContent="center">
           <Spacer />
           <Box>
-            <Box
-              as={motion.div}
-              initial="hidden"
-              animate="visible"
-            >
+            <Box as={motion.div} initial="hidden" animate="visible">
               <Text
                 as={motion.text}
                 bgGradient="linear(to-r, #FF0080, #b742ff)"
@@ -124,41 +122,45 @@ function Landing() {
           </Box>
         </Flex>
         <Link href="/Auth/SignUp">
-          <Button
-            as={motion.button}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"#"}
-            _hover={{
-              bg: "pink.300",
-            }}
+          <Box
+            as={motion.div}
             initial={{
-              opacity:0
+              opacity: 0,
+              y: 100,
             }}
             animate={{
-              opacity:1,
+              y: 0,
+              opacity: 1,
+              scale: 1,
               transition: {
-                delay:11,
-                duration:1,
-              }
-            }}
-            whileHover={{
-              scale:1.1,
-              opacity:0.8,
-            }}
-            whileTap={{
-              scale: 0.9,
-            
+                delay: 11,
+                duration: 1,
+              },
             }}
           >
-            Get Started
-          </Button>
+            <Button
+              as={motion.button}
+              // display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"pink.400"}
+              href={"#"}
+              whileHover={{
+                scale: 1.1,
+                opacity: 0.8,
+                backgroundColor: "#F687B3",
+              }}
+              whileTap={{
+                scale: 0.9,
+              }}
+            >
+              Get Started
+            </Button>
+          </Box>
         </Link>
       </Container>
-      <CryptoWalletAnimation />
+      {/* <CryptoWalletAnimation /> */}
     </div>
   );
 }
