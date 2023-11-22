@@ -1,4 +1,4 @@
-import { CoinPrice } from "@/app/coins/[coinId]/page";
+import { CoinPrice } from "@/app/dashboard/coins/[coinId]/page";
 
 export default function Balance({ user, data }) {
   let balance = 0;
