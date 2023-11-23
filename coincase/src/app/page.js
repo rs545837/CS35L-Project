@@ -32,14 +32,14 @@ function Landing() {
         <Flex alignContent="center">
           <Spacer />
           <Box>
-            <Box as={motion.div} initial="hidden" animate="visible">
+            <Box>
               <Text
-                as={motion.text}
+                as={motion.p}
                 bgGradient="linear(to-r, #FF0080, #b742ff)"
                 bgClip="text"
                 fontSize="8xl"
                 fontWeight="bold"
-                initial={{ scale: 0, opacity: 0 }}
+                initial={{ opacity: 0 }}
                 animate={{
                   scale: 1,
                   opacity: 1,
@@ -50,7 +50,7 @@ function Landing() {
               </Text>
               <Flex>
                 <Text
-                  as={motion.text}
+                  as={motion.p}
                   bgClip="text"
                   fontSize="2xl"
                   fontWeight="bold"
@@ -66,7 +66,7 @@ function Landing() {
                 </Text>
                 <Spacer />
                 <Text
-                  as={motion.text}
+                  as={motion.p}
                   bgClip="text"
                   fontSize="2xl"
                   fontWeight="bold"
@@ -83,7 +83,7 @@ function Landing() {
                 <Spacer />
 
                 <Text
-                  as={motion.text}
+                  as={motion.p}
                   bgClip="text"
                   fontSize="2xl"
                   fontWeight="bold"
@@ -100,7 +100,7 @@ function Landing() {
                 <Spacer />
 
                 <Text
-                  as={motion.text}
+                  as={motion.p}
                   bgClip="text"
                   fontSize="2xl"
                   fontWeight="bold"
