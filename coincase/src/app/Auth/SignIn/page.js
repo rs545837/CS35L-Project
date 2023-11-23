@@ -61,11 +61,6 @@ function SignIn() {
     }
   }, [isLoading, authUser]);
 
-  const handleFocus = () => {
-    if (!focusPassword) {
-      setFocusPassword(true);
-    }
-  };
   const handleShow = () => setShowPassword(!showPassword);
 
   const handleInput = (e) => {
@@ -159,7 +154,7 @@ function SignIn() {
             </Center>
             <Center>
               {isError && (
-                <Alert status="error">
+                <Alert status="error" colorScheme="pink">
                   <AlertIcon />
                   <AlertTitle>{errorMsg}</AlertTitle>
                 </Alert>
