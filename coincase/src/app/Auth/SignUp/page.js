@@ -49,17 +49,16 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 // import Link from "next/link";
 import { Link } from "@chakra-ui/next-js";
 
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, Timestamp,collection } from "firebase/firestore";
 import { auth, db } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../AuthContext";
 import { redirect } from "next/navigation";
 import { motion } from "framer-motion";
 
-
 function SignUp() {
-  const { isLoading, authUser } = useAuth()
-
+  const { isLoading, authUser } = useAuth();
+  const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [focusPassword, setFocusPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -69,18 +68,29 @@ function SignUp() {
     lastName: "",
     dateOfBirth: null,
   });
-  const [isError, setError] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
 
   useEffect(() => {
     if (authUser && !isLoading) {
-        redirect("/dashboard/Home")
+      redirect("/dashboard/Home");
     }
-  }, [isLoading, authUser])
+  }, [isLoading, authUser]);
 
-  const handleFocus = () => {
-    if (!focusPassword) {
-      setFocusPassword(true);
+  const getErrorMessage = (error) => {
+    if (error.includes("email-already-in-use")) {
+      return "The email address is already in use by another account.";
+    } else if (
+      error.includes("user-not-found") ||
+      error.includes("wrong-password")
+    ) {
+      return "Incorrect username or password. Please try again.";
+    } else if (error.includes("invalid-email")) {
+      return "Please enter a valid email address.";
+    } else if (error.includes("too-many-requests")) {
+      return "Too many unsuccessful login attempts. Please try again later.";
+    } else if (error.includes("user-disabled")) {
+      return "User account has been disabled.";
+    } else {
+      return "An error occurred. Please try again later.";
     }
   };
   const handleShow = () => setShowPassword(!showPassword);
@@ -106,63 +116,70 @@ function SignUp() {
     return requirements.map((regex) => regex.test(password));
   };
 
-  const isValidInput = (email, password, firstName, lastName, dateOfBirth) => {
-    let validPassword = checkPasswordRequirements(password).every((req) => req);
-    // TODO: implement logic for validating input
-    return true
+  const isValidPassword = (password) => {
+    return checkPasswordRequirements(password).every((req) => req);
   };
 
-  const createUserInUsersCollection = async (user) => {
-    // This is for creating the user in firestore on sign-up
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setErrorMsg("Please enter your email and password");
+      return;
+    }
+    if (!isValidPassword(formData.password)) {
+      setErrorMsg("Password is not valid. Please try again.");
+      return;
+    }
+
+    if (!formData.dateOfBirth) {
+      setErrorMsg("Please enter your date of birth.");
+      return;
+    }
+
+    if (!formData.firstName || !formData.lastName) {
+      setErrorMsg("Please enter your first name and last name");
+      return;
+    }
     try {
-        await setDoc(doc(db, "users", user.uid), {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            balance: 0,
-            date_of_birth: Timestamp.fromDate(new Date(formData.dateOfBirth)),
-            wallet: {
-              btc: 0,
-              eth: 0,
-              usdt: 0,
-              bnb: 0,
-              xrp: 0,
-              usdc: 0,
-              sol: 0,
-              steth: 0,
-              ada: 0,
-              doge: 0,
-            },
-            transaction_history: [],
-        })
-    } catch (err) {
-        // TODO: Figure out how to handle this error
-    }
-  }
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
 
-  const handleSignUp = () => {
-    if (!isValidInput()) {
-      // do not proceed, display error message
-      // set error message...
-      return
-    }
-
-    createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        .then((userCredential) => {
-            setError(false)
-            setErrorMsg("")
-            // Signed up
-            const user = userCredential.user;
-            
-            const promise = createUserInUsersCollection(user)
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-
-            setError(true)
-            setErrorMsg("Error Creating Account")
+      const usersCollection = collection(db, "users");
+      const userDocRef = doc(usersCollection, response.user.uid);
+      try {
+        await setDoc(doc(db, "users", response.user.uid), {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          balance: 1000,
+          date_of_birth: Timestamp.fromDate(new Date(formData.dateOfBirth)),
+          wallet: {
+            btc: 0,
+            eth: 0,
+            usdt: 0,
+            bnb: 0,
+            xrp: 0,
+            usdc: 0,
+            sol: 0,
+            steth: 0,
+            ada: 0,
+            doge: 0,
+          },
+          transaction_history: [],
         });
-  }
+        console.log("Document written with ID: ", userDocRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+
+      console.log(response.user);
+    } catch (err) {
+      setErrorMsg(getErrorMessage(err.message));
+      console.error(err.message);
+    }
+  };
 
   return (
     <div>
@@ -351,8 +368,8 @@ function SignUp() {
               </Button>
             </Center>
             <Center>
-              {isError && (
-                <Alert status="error">
+              {errorMsg && (
+                <Alert status="error" colorScheme="pink" >
                   <AlertIcon />
                   <AlertTitle>{errorMsg}</AlertTitle>
                 </Alert>
@@ -371,5 +388,4 @@ function SignUp() {
     </div>
   );
 }
-
 export default SignUp;

@@ -7,7 +7,7 @@ import CoinList from "./dashboard/coins/page";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import CryptoWalletAnimation from "./components/landingAnimation";
 import Logo from "./components/logo";
 
@@ -25,8 +25,6 @@ import Header from "./header";
 import Home from "./coins/page";
 
 function Landing() {
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
-
   return (
     <div>
       <Container centerContent>
@@ -136,7 +134,7 @@ function Landing() {
                 delay: 11,
                 type: "spring",
                 damping: 9,
-                stiffness: 80
+                stiffness: 80,
               },
             }}
           >
@@ -162,7 +160,6 @@ function Landing() {
           </Box>
         </Link>
       </Container>
-      {/* <CryptoWalletAnimation /> */}
     </div>
   );
 }
