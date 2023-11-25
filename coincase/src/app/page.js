@@ -144,7 +144,7 @@ function Landing() {
               fontSize={"sm"}
               fontWeight={600}
               color={"white"}
-              bg={"pink.400"}
+              bg={"#FF0080"}
               href={"#"}
               whileHover={{
                 scale: 1.1,
