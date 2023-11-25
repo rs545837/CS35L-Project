@@ -45,6 +45,7 @@ export default function Balance({ user, data }) {
   //const gain = (balance - user.balance) / user.balance;
 
   //const updatedUser = { ...user, balance: gain };
+  const gain = (100000 - pageState.balance) / pageState.balance; // compare to the money that the user initially had
   return (
     <div>
       Hi {pageState.firstName}! your current balance is ${pageState.balance},

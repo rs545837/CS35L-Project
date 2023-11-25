@@ -29,10 +29,9 @@ export default function Chart({ params }) {
   const { isLoading, data } = useQuery(
     ["ohlcv", { params }],
     () => fetchCoinHistory(params.coinId), // Note the change here
-    { refetchInterval: 10000 }
+    { refetchInterval: 10 * 60 * 1000 }
   );
-  console.log(params.coinId);
-  console.log(data);
+
   const series = data
     ? data.map((item) => ({
         x: new Date(item.time_open * 1000),
@@ -64,24 +63,26 @@ export default function Chart({ params }) {
 
   return (
     <ChartContainer>
-      {isClient && (
-        <div>
-          {isLoading ? (
-            "Loading Chart..."
-          ) : (
-            <ApexChart
-              style={{ width: "180%" }}
-              options={options}
-              series={[
-                {
-                  data: series,
-                },
-              ]}
-              type="candlestick"
-            />
+      {isLoading
+        ? "Loading Chart..."
+        : isClient && (
+            <div>
+              {isLoading ? (
+                "Loading Chart..."
+              ) : (
+                <ApexChart
+                  style={{ width: "180%" }}
+                  options={options}
+                  series={[
+                    {
+                      data: series,
+                    },
+                  ]}
+                  type="candlestick"
+                />
+              )}
+            </div>
           )}
-        </div>
-      )}
     </ChartContainer>
   );
 }

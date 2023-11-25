@@ -5,6 +5,8 @@ import { fetchCoins } from "../../api";
 import { CoinPrice } from "./[coinId]/page";
 import { styled } from "styled-components";
 import Balance from "../home/balance";
+import { coinPrices } from "../../../../static/coinPrices";
+import { coinName } from "../../../../static/coinName";
 
 const Row = styled.div`
   margin-left: 10px;
@@ -43,7 +45,6 @@ const CoinImg = styled.img`
 `;
 
 const Button = styled.button`
-  background-color: blue;
   border-radius: 10px;
   color: white;
   padding: 10px 20px;
@@ -52,54 +53,61 @@ const Button = styled.button`
 `;
 
 export default function CoinList({ isLoggedIn }) {
-  const { isLoading, data } = useQuery("allCoins", fetchCoins);
-  return (
-    <div>
-      {isLoggedIn ? <Balance user="user" data={data} /> : null}
-      <Row>
-        <Div>Name</Div>
-        <Div>Price</Div> <Div>Change</Div> <Div>Market Cap</Div>
-        {isLoggedIn ? (
-          <Link
-            href="/dashboard/trade"
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <Button>Buy</Button>
-          </Link>
-        ) : null}
-      </Row>
-      {data?.slice(0, 10).map((item) => (
-        <Row key={item.id}>
-          <Div>
-            <CoinImg
-              src={`https://coinicons-api.vercel.app/api/icon/${item.symbol.toLowerCase()}`}
-            />
-            <NameDiv>
-              <Div>{item.name}</Div>
-              <Div>{item.symbol}</Div>
-            </NameDiv>
-          </Div>
-          <Div
-            style={
-              !isLoggedIn ? { color: "black !important" } : { color: "white" }
-            }
-          >
-            <CoinPrice params={item.id} type="price" />
-          </Div>
-          <Div>
-            <CoinPrice params={item.id} type="change" />
-          </Div>
-          <Div>
-            <CoinPrice params={item.id} type="cap" />
-          </Div>
+  let data = coinName;
+  const { isLoading, data: datafetched } = useQuery("allCoins", fetchCoins);
 
+  if (!isLoading) {
+    data = datafetched;
+  }
+  return (
+    <>
+      <div>
+        {isLoggedIn ? <Balance user="user" data={data} /> : null}
+        <Row>
+          <Div>Name</Div>
+          <Div>Price</Div> <Div>Change</Div> <Div>Market Cap</Div>
           {isLoggedIn ? (
-            <button>
-              <Link href={`/dashboard/coins/${item.id}`}>Buy</Link>
-            </button>
+            <Link
+              href="/dashboard/trade"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button style={{ backgroundColor: "blue" }}>Buy</Button>
+            </Link>
           ) : null}
         </Row>
-      ))}
-    </div>
+        {data?.slice(0, 10).map((item) => (
+          <Row key={item.id}>
+            <Div>
+              <CoinImg
+                src={`https://coinicons-api.vercel.app/api/icon/${item.symbol.toLowerCase()}`}
+              />
+              <NameDiv>
+                <Div>{item.name}</Div>
+                <Div>{item.symbol}</Div>
+              </NameDiv>
+            </Div>
+            <Div
+              style={
+                !isLoggedIn ? { color: "black !important" } : { color: "white" }
+              }
+            >
+              <CoinPrice params={item.id} type="price" rank={item.rank} />
+            </Div>
+            <Div>
+              <CoinPrice params={item.id} type="change" rank={item.rank} />
+            </Div>
+            <Div>
+              <CoinPrice params={item.id} type="cap" rank={item.rank} />
+            </Div>
+
+            {isLoggedIn ? (
+              <Button style={{ backgroundColor: "gray" }}>
+                <Link href={`/dashboard/coins/${item.id}`}>Buy</Link>
+              </Button>
+            ) : null}
+          </Row>
+        ))}
+      </div>
+    </>
   );
 }

@@ -38,4 +38,5 @@ const MainContainer = styled.div`
 const Section = styled.div`
   padding: 1rem;
   margin: 1rem;
+  overflow-y: scroll;
 `;

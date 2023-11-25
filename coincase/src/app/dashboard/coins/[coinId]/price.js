@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 import { keyframes, styled } from "styled-components";
+import { coinPrices } from "../../../../../static/coinPrices";
 const PriceContainer = styled.div`
   width: fit-content;
   overflow: overlay;
@@ -64,17 +65,21 @@ const PercentItems = styled.div`
 const BASE_URL = "https://api.coinpaprika.com/v1";
 
 export default function Price({ params }) {
+  let priceData = coinPrices;
   const fetchCoinTickers = async () => {
     return await axios
       .get(`${BASE_URL}/tickers/${params.coinId}`)
       .then((res) => res.data);
   };
-  const { isLoading: priceLoading, data: priceData } = useQuery(
+  const { isLoading, data } = useQuery(
     ["tickers", { params }],
     () => fetchCoinTickers(params.coinId),
-    { refetchInterval: 100000 }
+    { refetchInterval: 10 * 60 * 1000 }
   );
 
+  if (!isLoading) {
+    priceData = data;
+  }
   let val;
   const getPriceColor = (val) => {
     if (val === undefined) {
@@ -106,92 +111,94 @@ export default function Price({ params }) {
         <PriceWrapper>
           <CurrentPrice>
             <h3>
-              Current Price : {priceData?.quotes.USD.price.toFixed(2) ?? 0} USD
+              Current Price : {priceData?.quotes?.USD.price.toFixed(2) ?? 0} USD
             </h3>
           </CurrentPrice>
           <PercentChange>
             <PercentItems
               style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_1y),
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_1y),
               }}
             >
               {" "}
               <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_1y)}
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_1y)}
               </span>
-              <span>1 Year : {priceData?.quotes.USD.percent_change_1y}%</span>
+              <span>1 Year : {priceData?.quotes?.USD.percent_change_1y}%</span>
             </PercentItems>
             <PercentItems
               style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_30d),
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_30d),
               }}
             >
               <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_30d)}
-              </span>
-              <span>1 Month : {priceData?.quotes.USD.percent_change_30d}%</span>
-            </PercentItems>
-            <PercentItems
-              style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_7d),
-              }}
-            >
-              <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_7d)}
-              </span>
-              <span>1 Week : {priceData?.quotes.USD.percent_change_7d}%</span>
-            </PercentItems>
-            <PercentItems
-              style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_24h),
-              }}
-            >
-              <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_24h)}
-              </span>
-              <span>1 Day : {priceData?.quotes.USD.percent_change_24h}%</span>
-            </PercentItems>
-            <PercentItems
-              style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_12h),
-              }}
-            >
-              <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_12h)}
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_30d)}
               </span>
               <span>
-                12 Hours : {priceData?.quotes.USD.percent_change_12h}%
+                1 Month : {priceData?.quotes?.USD.percent_change_30d}%
               </span>
             </PercentItems>
             <PercentItems
               style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_6h),
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_7d),
               }}
             >
               <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_6h)}
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_7d)}
               </span>
-              <span>6 Hours : {priceData?.quotes.USD.percent_change_6h}%</span>
+              <span>1 Week : {priceData?.quotes?.USD.percent_change_7d}%</span>
             </PercentItems>
             <PercentItems
               style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_1h),
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_24h),
               }}
             >
               <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_1h)}
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_24h)}
               </span>
-              <span>1 Hour : {priceData?.quotes.USD.percent_change_1h}%</span>
+              <span>1 Day : {priceData?.quotes?.USD.percent_change_24h}%</span>
             </PercentItems>
             <PercentItems
               style={{
-                color: getPriceColor(priceData?.quotes.USD.percent_change_30m),
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_12h),
               }}
             >
               <span>
-                {getPriceArrow(priceData?.quotes.USD.percent_change_30m)}
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_12h)}
               </span>
-              <span>30 Min : {priceData?.quotes.USD.percent_change_30m}%</span>
+              <span>
+                12 Hours : {priceData?.quotes?.USD.percent_change_12h}%
+              </span>
+            </PercentItems>
+            <PercentItems
+              style={{
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_6h),
+              }}
+            >
+              <span>
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_6h)}
+              </span>
+              <span>6 Hours : {priceData?.quotes?.USD.percent_change_6h}%</span>
+            </PercentItems>
+            <PercentItems
+              style={{
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_1h),
+              }}
+            >
+              <span>
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_1h)}
+              </span>
+              <span>1 Hour : {priceData?.quotes?.USD.percent_change_1h}%</span>
+            </PercentItems>
+            <PercentItems
+              style={{
+                color: getPriceColor(priceData?.quotes?.USD.percent_change_30m),
+              }}
+            >
+              <span>
+                {getPriceArrow(priceData?.quotes?.USD.percent_change_30m)}
+              </span>
+              <span>30 Min : {priceData?.quotes?.USD.percent_change_30m}%</span>
             </PercentItems>
           </PercentChange>
         </PriceWrapper>
