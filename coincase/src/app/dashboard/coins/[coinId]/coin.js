@@ -8,6 +8,8 @@ import Link from "next/link";
 import QueryProvider from "@/app/queryProvider";
 import Chart from "./chart";
 import Price from "./price";
+import { coinPrices } from "../../../../../static/coinPrices";
+import { coinName } from "../../../../../static/coinName";
 
 export const StyledLink = styled(Link)`
   display: flex;
@@ -154,27 +156,25 @@ const BASE_URL = "https://api.coinpaprika.com/v1";
 
 export default function Coin({ params }) {
   const coinId = params.coinId;
-  const { isLoading, data } = useQuery("allCoins", fetchCoins);
   const fetchCoinTickers = async () => {
     return await axios
       .get(`${BASE_URL}/tickers/${params.coinId}`)
       .then((res) => res.data);
   };
-  const { isLoading: tickersLoading, data: tickersData } = useQuery(
+  const coinWithId = coinName.find((coin) => coin.id === params.coinId).rank;
+  let tickersData = coinPrices[coinWithId - 1];
+  const { isLoading: tickersLoading, data } = useQuery(
     ["tickers", { params }],
     () => fetchCoinTickers(params.coinId),
     { refetchInterval: 100000 }
   );
-  const fetchCoinInfo = async () => {
-    return await axios
-      .get(`${BASE_URL}/coins/${params.coinId}`)
-      .then((res) => res.data);
-  };
-  const { isLoading: infoLoading, data: infoData } = useQuery(
-    ["info", { params }],
-    () => fetchCoinInfo(params.coinId)
-  );
-  console.log(infoData);
+  if (!tickersLoading) {
+    tickersData = data;
+  }
+  //console.log(tickersData);
+  //console.log(coinPrices[coinWithId - 1]);
+  //console.log(coinName[coinWithId - 1].description);
+
   return (
     <CoinWrapper>
       <HelmetProvider>
@@ -186,7 +186,7 @@ export default function Coin({ params }) {
         <TitleImg
           src={`https://coinicons-api.vercel.app/api/icon/${tickersData?.symbol.toLowerCase()}`}
         />
-        <Title>{isLoading ? "Loading..." : tickersData?.name}</Title>
+        <Title>{tickersLoading ? "Loading..." : tickersData?.name}</Title>
       </TitleContainer>
       <ContentWrapper>
         <PriceAndChart>
@@ -210,7 +210,7 @@ export default function Coin({ params }) {
               <span>{tickersData?.rank}</span>
             </OverViewItem>
           </OverView>
-          <Description>{infoData?.description}</Description>
+          <Description>{coinName[coinWithId - 1].description}</Description>
           <OverView>
             <OverViewItem>
               <span>Total Supply: </span>

@@ -1,54 +1,56 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signOut as authSignOut } from 'firebase/auth';
+import { createContext, useContext, useEffect, useState } from "react";
+import { onAuthStateChanged, signOut as authSignOut } from "firebase/auth";
 import { auth } from "@/app/firebase";
-import React from 'react'
+import React from "react";
 
 export default function useFirebaseAuth() {
-    const [authUser, setAuthUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+  const [authUser, setAuthUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const clear = () => {
-        setAuthUser(null);
-        setIsLoading(false);
-    };
+  const clear = () => {
+    setAuthUser(null);
+    setIsLoading(false);
+  };
 
-    const authStateChanged = async (user) => {
-        setIsLoading(true);
-        if (!user) {
-            clear();
-            return;
-        }
-        setAuthUser({
-            uid: user.uid,
-            email: user.email
-        });
-        setIsLoading(false);
-    };
+  // Listen for Firebase Auth state change
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, authStateChanged);
+    return () => unsubscribe();
+  }, []);
 
-    const signOut = () => authSignOut(auth).then(clear);
+  const authStateChanged = async (user) => {
+    setIsLoading(true);
+    if (!user) {
+      clear();
+      return;
+    }
+    setAuthUser({
+      uid: user.uid,
+      email: user.email,
+    });
+    setIsLoading(false);
+  };
 
-    // Listen for Firebase Auth state change
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, authStateChanged);
-        return () => unsubscribe();
-    }, []);
+  const signOut = () => authSignOut(auth).then(clear);
 
-    return {
-        authUser,
-        isLoading,
-        signOut
-    };
+  return {
+    authUser,
+    isLoading,
+    signOut,
+  };
 }
 
 const AuthUserContext = createContext({
-    authUser: null,
-    isLoading: true,
-    signOut: async () => {}
+  authUser: null,
+  isLoading: true,
+  signOut: async () => {},
 });
 
 export function AuthUserProvider({ children }) {
-    const auth = useFirebaseAuth();
-    return <AuthUserContext.Provider value={auth}>{children}</AuthUserContext.Provider>;
+  const auth = useFirebaseAuth();
+  return (
+    <AuthUserContext.Provider value={auth}>{children}</AuthUserContext.Provider>
+  );
 }
 
 export const useAuth = () => useContext(AuthUserContext);

@@ -13,6 +13,11 @@ export default function Balance({ user, data }) {
     balance: 0,
   });
 
+  useEffect(() => {
+    // need scan name and last updated for now...
+    fetchFromDB();
+  }, []);
+
   const fetchFromDB = async () => {
     const docRef = doc(db, "users", authUser.uid);
     const docSnap = await getDoc(docRef);
@@ -30,11 +35,6 @@ export default function Balance({ user, data }) {
     }
   };
 
-  useEffect(() => {
-    // need scan name and last updated for now...
-    fetchFromDB();
-  }, []);
-
   /*   data?.slice(0, 10).forEach((item) => {
     const price = CoinPrice({ params: item.id, type: 'only' });
     balance += user[item.id]?.count * price;
@@ -45,6 +45,7 @@ export default function Balance({ user, data }) {
   //const gain = (balance - user.balance) / user.balance;
 
   //const updatedUser = { ...user, balance: gain };
+  const gain = (100000 - pageState.balance) / pageState.balance; // compare to the money that the user initially had
   return (
     <div>
       Hi {pageState.firstName}! your current balance is ${pageState.balance},
