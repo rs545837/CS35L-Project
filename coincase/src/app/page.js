@@ -1,12 +1,13 @@
 /** @format */
 
 "use client";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CoinList from "./dashboard/coins/page";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import CryptoWalletAnimation from "./components/landingAnimation";
 import Logo from "./components/logo";
 
@@ -18,6 +19,7 @@ import {
   Flex,
   Box,
   Spacer,
+  Button,
 } from "@chakra-ui/react";
 import Header from "./header";
 import Home from "./coins/page";
@@ -28,63 +30,136 @@ function Landing() {
       <Container centerContent>
         <Header />
         <Flex alignContent="center">
-          <Box></Box>
           <Spacer />
           <Box>
-            <Text
-              bgGradient="linear(to-r, #FF0080, #b742ff)"
-              bgClip="text"
-              fontSize="8xl"
-              fontWeight="bold"
-            >
-              Coincase
-            </Text>
-            <Flex>
+            <Box>
               <Text
+                as={motion.p}
+                bgGradient="linear(to-r, #FF0080, #b742ff)"
                 bgClip="text"
-                fontSize="2xl"
+                fontSize="8xl"
                 fontWeight="bold"
-                style={{ color: "#FF0080" }}
+                initial={{ opacity: 0 }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                  transition: { delay: 5, duration: 2.3 },
+                }}
               >
-                Buy.
+                Coincase
               </Text>
-              <Spacer />
-              <Text
-                bgClip="text"
-                fontSize="2xl"
-                fontWeight="bold"
-                style={{ color: "#FF0080" }}
-              >
-                Sell.
-              </Text>
-              <Spacer />
+              <Flex>
+                <Text
+                  as={motion.p}
+                  bgClip="text"
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  style={{ color: "#FF0080" }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                    transition: { delay: 6, duration: 2.5 },
+                  }}
+                >
+                  Buy.
+                </Text>
+                <Spacer />
+                <Text
+                  as={motion.p}
+                  bgClip="text"
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  style={{ color: "#FF0080" }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                    transition: { delay: 7, duration: 2.5 },
+                  }}
+                >
+                  Sell.
+                </Text>
+                <Spacer />
 
-              <Text
-                bgClip="text"
-                fontSize="2xl"
-                fontWeight="bold"
-                style={{ color: "#FF0080" }}
-              >
-                Trade.
-              </Text>
-              <Spacer />
+                <Text
+                  as={motion.p}
+                  bgClip="text"
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  style={{ color: "#FF0080" }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                    transition: { delay: 8, duration: 2.5 },
+                  }}
+                >
+                  Trade.
+                </Text>
+                <Spacer />
 
-              <Text
-                bgClip="text"
-                fontSize="2xl"
-                fontWeight="bold"
-                style={{ color: "#b742ff" }}
-              >
-                Crypto.
-              </Text>
-            </Flex>
+                <Text
+                  as={motion.p}
+                  bgClip="text"
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  style={{ color: "#b742ff" }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                    transition: { delay: 9.5, duration: 3 },
+                  }}
+                >
+                  Crypto.
+                </Text>
+              </Flex>
+            </Box>
+            <Logo />
           </Box>
-          <Spacer />
-          <Box flex={1}></Box>
         </Flex>
-        <Logo />
+        <Link href="/Auth/SignUp">
+          <Box
+            as={motion.div}
+            initial={{
+              opacity: 0,
+              y: 100,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              transition: {
+                delay: 11,
+                type: "spring",
+                damping: 9,
+                stiffness: 80,
+              },
+            }}
+          >
+            <Button
+              as={motion.button}
+              // display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"pink.400"}
+              href={"#"}
+              whileHover={{
+                scale: 1.1,
+                opacity: 0.8,
+                backgroundColor: "#F687B3",
+              }}
+              whileTap={{
+                scale: 0.9,
+              }}
+            >
+              Get Started
+            </Button>
+          </Box>
+        </Link>
       </Container>
-      <CryptoWalletAnimation />
     </div>
   );
 }
