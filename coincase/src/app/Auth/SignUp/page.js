@@ -49,7 +49,7 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 // import Link from "next/link";
 import { Link } from "@chakra-ui/next-js";
 
-import { doc, setDoc, Timestamp,collection } from "firebase/firestore";
+import { doc, setDoc, Timestamp, collection } from "firebase/firestore";
 import { auth, db } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../AuthContext";
@@ -71,7 +71,7 @@ function SignUp() {
 
   useEffect(() => {
     if (authUser && !isLoading) {
-      redirect("/dashboard/Home");
+      redirect("/dashboard/home");
     }
   }, [isLoading, authUser]);
 
@@ -369,7 +369,7 @@ function SignUp() {
             </Center>
             <Center>
               {errorMsg && (
-                <Alert status="error" colorScheme="pink" >
+                <Alert status="error" colorScheme="pink">
                   <AlertIcon />
                   <AlertTitle>{errorMsg}</AlertTitle>
                 </Alert>

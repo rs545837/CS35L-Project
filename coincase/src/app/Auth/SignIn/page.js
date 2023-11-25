@@ -36,7 +36,13 @@ import {
 import { auth } from "@/app/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-import { ViewIcon, ViewOffIcon, PhoneIcon, EmailIcon,LockIcon } from "@chakra-ui/icons";
+import {
+  ViewIcon,
+  ViewOffIcon,
+  PhoneIcon,
+  EmailIcon,
+  LockIcon,
+} from "@chakra-ui/icons";
 
 import { Link } from "@chakra-ui/next-js";
 import { redirect } from "next/navigation";
@@ -163,7 +169,7 @@ function SignIn() {
           </VStack>
         </FormControl>
         <Text>
-          Don't have an account?{""}
+          Do not have an account?{""}
           <Link href="/Auth/SignUp" color="pink.300">
             {" "}
             Create one.

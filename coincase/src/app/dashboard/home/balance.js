@@ -13,6 +13,11 @@ export default function Balance({ user, data }) {
     balance: 0,
   });
 
+  useEffect(() => {
+    // need scan name and last updated for now...
+    fetchFromDB();
+  }, []);
+
   const fetchFromDB = async () => {
     const docRef = doc(db, "users", authUser.uid);
     const docSnap = await getDoc(docRef);
@@ -29,11 +34,6 @@ export default function Balance({ user, data }) {
       //console.log("No such document!");
     }
   };
-
-  useEffect(() => {
-    // need scan name and last updated for now...
-    fetchFromDB();
-  }, []);
 
   /*   data?.slice(0, 10).forEach((item) => {
     const price = CoinPrice({ params: item.id, type: 'only' });
