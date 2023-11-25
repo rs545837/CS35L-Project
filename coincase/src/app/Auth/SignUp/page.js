@@ -1,6 +1,6 @@
 "use client";
 
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect,useRef } from "react";
 import {
   FormControl,
   FormLabel,
@@ -80,6 +80,17 @@ function SignUp() {
   });
   const toast = useToast();
   const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const passwordRequirementsRef = useRef(null);
+
+
+  useEffect(() => {
+    if (focusPassword) {
+      passwordRequirementsRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [focusPassword]);
 
   useEffect(() => {
     if (authUser && !isLoading) {
@@ -356,7 +367,7 @@ function SignUp() {
                   </InputRightElement>
                 </InputGroup>
                 <Collapse in={focusPassword}>
-                  <Box>
+                  <Box ref={passwordRequirementsRef} >
                     <List spacing={1}>
                       <ListItem>
                         <ListIcon
@@ -445,7 +456,7 @@ function SignUp() {
                   href={"#"}
                   whileHover={{
                     scale: 1.1,
-                    backgroundColor: "#F687B3",
+                    backgroundColor: "#e00071",
                   }}
                   whileTap={{
                     scale: 0.9,
