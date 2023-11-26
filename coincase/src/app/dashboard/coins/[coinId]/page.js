@@ -3,6 +3,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Coin from "./coin";
+import { coinPrices } from "../../../../../static/coinPrices";
 
 const BASE_URL = "https://api.coinpaprika.com/v1";
 
@@ -15,18 +16,22 @@ export default function Home({ params }) {
   );
 }
 
-export function CoinPrice({ params, type }) {
+export function CoinPrice({ params, type, rank }) {
+  let tickersData = coinPrices[rank - 1];
   const fetchCoinTickers = async () => {
     return await axios
       .get(`${BASE_URL}/tickers/${params}`)
       .then((res) => res.data);
   };
-  const { isLoading: tickersLoading, data: tickersData } = useQuery(
+  const { isLoading: tickersLoading, data } = useQuery(
     ["tickers", { params }],
     () => fetchCoinTickers(params),
     { refetchInterval: 5000 }
   );
-
+  if (!tickersLoading) {
+    tickersData = data;
+  }
+  console.log(params);
   let value;
 
   switch (type) {
@@ -61,7 +66,7 @@ export function CoinPrice({ params, type }) {
     <>
       <div
         style={{
-          color: type === "change" ? (value < 0 ? "red" : "blue") : "white",
+          color: type === "change" ? (value < 0 ? "red" : "blue") : "black",
         }}
       >
         {value}

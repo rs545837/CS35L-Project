@@ -1,7 +1,7 @@
 /** @format */
 
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import CoinList from "./dashboard/coins/page";
 import Link from "next/link";
