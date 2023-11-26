@@ -54,6 +54,7 @@ import { Link } from "@chakra-ui/next-js";
 import { redirect } from "next/navigation";
 import { useAuth } from "../AuthContext";
 import { motion } from "framer-motion";
+import LogoRepeat from "@/app/components/logoRepeating";
 
 function SignIn() {
   const { isLoading, authUser } = useAuth();
@@ -123,7 +124,7 @@ function SignIn() {
     <Flex>
       <Container>
         <Text
-          bgGradient="linear(to-r, #FF0080, #FF0080)"
+          bgGradient="radial(#FF0080, #b742ff)"
           bgClip="text"
           fontSize="5xl"
           fontWeight="bold"
@@ -131,7 +132,7 @@ function SignIn() {
         >
           <Link href="/">Coincase</Link>
         </Text>
-        <Logo/>
+        <LogoRepeat />
       </Container>
       <Container
         w="40%"

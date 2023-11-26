@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-
 import React from "react";
 
-function Logo() {
+function LogoRepeat() {
   return (
     <motion.svg viewBox="0 0 800 800" key="svg1">
       <defs>
@@ -26,7 +25,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -38,7 +37,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.2,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -57,21 +56,23 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
+            opacity: 0,
           }}
           animate={{
-            pathLength: 0.68,
-            // strokeDasharray: "1144 1970",
-            opacity: 0.97,
-            transition: {
-              duration: 3,
-              delay: 1.4,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.68, 0.69, 1],
+            opacity: [0, 0.97, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -89,21 +90,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.64,
-            strokeDasharray: "1009 1970",
-            opacity: 0.87,
-            transition: {
-              duration: 3,
-              delay: 1.6,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.64, 0.65, 1],
+            opacity: [0, 0.97, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -121,21 +123,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.6,
-            strokeDasharray: "883 1970",
-            opacity: 0.87,
-            transition: {
-              duration: 3,
-              delay: 1.7,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.6, 0.61, 1],
+            opacity: [0, 0.97, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -153,21 +156,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.57,
-            opacity: 0.87,
-            strokeDasharray: "765 1970",
-            transition: {
-              duration: 3,
-              delay: 1.7,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.57, 0.58, 1],
+            opacity: [0, 0.97, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -185,22 +189,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.53,
-            opacity: 0.87,
-
-            strokeDasharray: "656 1970",
-            transition: {
-              duration: 3,
-              delay: 1.8,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.53, 0.54, 1],
+            opacity: [0, 0.87, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -218,22 +222,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.5,
-            opacity: 0.87,
-
-            strokeDasharray: "555 1970",
-            transition: {
-              duration: 3,
-              delay: 1.9,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.5, 0.51, 1],
+            opacity: [0, 0.8, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -251,22 +255,22 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
             pathLength: 0,
           }}
           animate={{
-            pathLength: 0.47,
-            opacity: 0.87,
-
-            strokeDasharray: "462 1970",
-            transition: {
-              duration: 3,
-              delay: 1.9,
-              ease: "easeInOut",
-            },
+            pathLength: [0, 0.47, 0.48, 1],
+            opacity: [0, 0.7, 1, 0],
+          }}
+          transition={{
+            times: [0, 0.3, 0.9, 1],
+            duration: 8,
+            ease: "easeOut",
+            repeat: "Infinity",
+            repeatDelay: 0.5,
           }}
         ></motion.circle>
         <motion.circle
@@ -284,7 +288,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -296,7 +300,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.9,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -315,7 +319,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -327,7 +331,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -346,7 +350,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -358,7 +362,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -377,7 +381,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -389,7 +393,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -408,7 +412,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -420,7 +424,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -439,7 +443,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -451,7 +455,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.2,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -470,7 +474,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -482,7 +486,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.2,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -501,7 +505,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -513,7 +517,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.2,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -532,7 +536,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.7,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
           initial={{
@@ -544,7 +548,7 @@ function Logo() {
             transition: {
               duration: 3,
               delay: 1.5,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }}
         ></motion.circle>
@@ -553,4 +557,4 @@ function Logo() {
   );
 }
 
-export default Logo;
+export default LogoRepeat;
