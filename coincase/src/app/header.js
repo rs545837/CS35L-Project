@@ -48,7 +48,7 @@ export default function Header() {
             spacing={6}
             alignItems={"center"}
           >
-            <Link href="/Auth/SignUp">
+            <Link href="/Auth/SignIn">
               <Button
                 as={"a"}
                 fontSize={"sm"}
@@ -59,7 +59,7 @@ export default function Header() {
                 Sign In
               </Button>
             </Link>
-            <Link href="/Auth/SignIn">
+            <Link href="/Auth/SignUp">
               <Button
                 as={"a"}
                 display={{ base: "none", md: "inline-flex" }}
