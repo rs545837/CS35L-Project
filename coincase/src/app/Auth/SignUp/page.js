@@ -265,7 +265,7 @@ function SignUp() {
         <Container
           w="1000px"
           centerContent
-          bgGradient="linear(to-r, #FFFFFF, #FF0080,#FFFFFF)"
+          bgGradient="linear(to-r, #FFFFFF, #FF0080,#b742ff,#FFFFFF)"
           h="100%"
           overflow="hidden"
         >
@@ -367,7 +367,7 @@ function SignUp() {
                   </InputRightElement>
                 </InputGroup>
                 <Collapse in={focusPassword}>
-                  <Box ref={passwordRequirementsRef} >
+                  <Box ref={passwordRequirementsRef}>
                     <List spacing={1}>
                       <ListItem>
                         <ListIcon
