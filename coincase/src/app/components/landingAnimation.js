@@ -1,7 +1,7 @@
 import Lottie from "lottie-web";
 import React from "react";
 
-const CryptoWalletAnimation = () => {
+const SignUpAnimation = () => {
   const lottieRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -12,7 +12,7 @@ const CryptoWalletAnimation = () => {
       autoplay: true,
       speed: 0.3,
       easing: "easeInOutQuad",
-      path: "https://lottie.host/b1a4bb6a-aff9-4a01-9c72-44353ac8885d/thc3uwtxKB.json",
+      path: "https://lottie.host/acb93228-0ab9-4e6f-8ece-b911b589d6af/MYFzYJAgEb.json",
     });
 
     return () => {
@@ -28,4 +28,4 @@ const CryptoWalletAnimation = () => {
   );
 };
 
-export default CryptoWalletAnimation;
+export default SignUpAnimation;
