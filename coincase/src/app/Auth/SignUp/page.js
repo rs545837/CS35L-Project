@@ -227,7 +227,15 @@ function SignUp() {
     <Box>
       <Flex>
         <Box padding={10}>
-          <List spacing={100}>
+          <Text
+            bgGradient="linear(to-r, #FF0080, #b742ff)"
+            bgClip="text"
+            fontSize="4xl"
+            fontWeight="bold"
+          >
+            <Link href="/" >Coincase</Link>
+          </Text>
+          <List spacing={70}>
             <ListItem>
               <ListIcon as={MdRocketLaunch} color="#FF0080" />
               Get Started Quickly
@@ -273,7 +281,7 @@ function SignUp() {
             size="lg"
             variant="elevated"
             padding={30}
-            margin={2}
+            margin={1.5}
             align="center"
           >
             <CardHeader>
@@ -281,8 +289,10 @@ function SignUp() {
                 bgGradient="linear(to-r, #FF0080, #b742ff)"
                 bgClip="text"
                 fontWeight="bold"
+                textAlign="center"
+              
               >
-                Create your Coincase account!
+                Create your account today!
               </Heading>
             </CardHeader>
             <FormControl>

@@ -20,6 +20,7 @@ import {
   Box,
   Spacer,
   Button,
+  VStack,
 } from "@chakra-ui/react";
 import Header from "./header";
 import Home from "./coins/page";
@@ -119,28 +120,46 @@ function Landing() {
             <Logo />
           </Box>
         </Flex>
-        <Link href="/Auth/SignUp">
-          <Box
-            as={motion.div}
-            initial={{
-              opacity: 0,
-              y: 100,
-            }}
-            animate={{
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              transition: {
-                delay: 11,
-                type: "spring",
-                damping: 9,
-                stiffness: 80,
-              },
-            }}
-          >
+        <VStack
+          as={motion.div}
+          initial={{
+            opacity: 0,
+            y: 100,
+          }}
+          animate={{
+            y: -40,
+            opacity: 1,
+            scale: 1,
+            transition: {
+              delay: 11,
+              type: "spring",
+              damping: 9,
+              stiffness: 60,
+            },
+          }}
+        >
+          <Link href="/Auth/SignUp">
             <Button
               as={motion.button}
-              // display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"#FF0080"}
+              href={"#"}
+              whileHover={{
+                scale: 1.1,
+                backgroundColor: "#e00071",
+              }}
+              whileTap={{
+                scale: 0.9,
+              }}
+            >
+              Get Started
+            </Button>
+          </Link>
+          <Link href="/Auth/SignIn">
+            <Button
+              as={motion.button}
               fontSize={"sm"}
               fontWeight={600}
               color={"white"}
@@ -149,16 +168,16 @@ function Landing() {
               whileHover={{
                 scale: 1.1,
                 opacity: 0.8,
-                backgroundColor: "#F687B3",
+                backgroundColor: "#e00071",
               }}
               whileTap={{
                 scale: 0.9,
               }}
             >
-              Get Started
+              Sign In
             </Button>
-          </Box>
-        </Link>
+          </Link>
+        </VStack>
       </Container>
     </div>
   );

@@ -35,10 +35,12 @@ import {
   CardHeader,
   Heading,
   useToast,
+  Flex,
 } from "@chakra-ui/react";
 
 import { auth } from "@/app/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Logo from "@/app/components/logo";
 
 import {
   ViewIcon,
@@ -118,32 +120,47 @@ function SignIn() {
   };
 
   return (
-    <Box>
+    <Flex>
+      <Container>
+        <Text
+          bgGradient="linear(to-r, #FF0080, #FF0080)"
+          bgClip="text"
+          fontSize="5xl"
+          fontWeight="bold"
+          textAlign="center"
+        >
+          <Link href="/">Coincase</Link>
+        </Text>
+        <Logo/>
+      </Container>
       <Container
-        w="1000px"
+        w="40%"
         centerContent
         bgGradient="linear(to-r, #FFFFFF, #FF0080,#b742ff,#FFFFFF)"
-        h="100%"
+        h="97vh"
         overflow="hidden"
       >
         <Card
           size="lg"
           variant="elevated"
-          padding={30}
-          margin={2}
+          padding={50}
+          margin={1.5}
           align="center"
+          w="100%"
+          h="100%"
         >
           <CardHeader>
             <Heading
               bgGradient="linear(to-r, #FF0080, #b742ff)"
               bgClip="text"
               fontWeight="bold"
+              textAlign="center"
             >
-              Sign in to your Coincase account!
+              Welcome back!
             </Heading>
           </CardHeader>
           <FormControl>
-            <VStack spacing={50}>
+            <VStack spacing={70}>
               <InputGroup>
                 <InputLeftElement pointerEvents="none">
                   <EmailIcon color="#FF0080" />
@@ -201,7 +218,6 @@ function SignIn() {
               </Button>
             </VStack>
           </FormControl>
-
           <Text>
             Don't have an account?{""}
             <Link href="/Auth/SignUp" color="#b742ff">
@@ -211,7 +227,7 @@ function SignIn() {
           </Text>
         </Card>
       </Container>
-    </Box>
+    </Flex>
   );
 }
 
