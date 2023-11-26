@@ -103,7 +103,7 @@ function SignIn() {
       setErrorMsg("Please enter your email and password");
       return;
     }
-    setIsButtonPressed(true);
+    setIsButtonPressed(false);
     console.log(formData.email);
     console.log(formData.password);
     signInWithEmailAndPassword(auth, formData.email, formData.password)
