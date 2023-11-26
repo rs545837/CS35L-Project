@@ -84,14 +84,14 @@ function SignUp() {
   const passwordRequirementsRef = useRef(null);
 
 
-  // useEffect(() => {
-  //   if (focusPassword) {
-  //     passwordRequirementsRef.current.scrollIntoView({
-  //       behavior: "smooth",
-  //       block: "start",
-  //     });
-  //   }
-  // }, [focusPassword]);
+  useEffect(() => {
+    if (focusPassword) {
+      passwordRequirementsRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [focusPassword]);
 
   useEffect(() => {
     if (authUser && !isLoading) {
