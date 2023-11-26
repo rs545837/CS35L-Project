@@ -85,7 +85,7 @@ function SignIn() {
 
   useEffect(() => {
     if (authUser && !isLoading) {
-      redirect("/dashboard/home");
+      redirect("/dashboard/Home");
     }
   }, [isLoading, authUser]);
 
