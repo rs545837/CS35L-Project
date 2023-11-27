@@ -5,9 +5,22 @@
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, Container, Text, VStack } from "@chakra-ui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/firebase";
+
+const colors = [
+  "#f9058b",
+  "#f30b95",
+  "#ed11a0",
+  "#e716aa",
+  "#e11bb5",
+  "#db21c0",
+  "#d527ca",
+  "#cf2cd5",
+  "#c931df",
+  "#c337ea",
+];
 
 const Wallet = () => {
   const [wallet, setWallet] = useState({});
@@ -30,8 +43,10 @@ const Wallet = () => {
   // Gets wallet info based on UID
   useEffect(() => {
     const getUser = async () => {
-      const docRef = doc(db, "Users", uid);
+      const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
+
+      console.log(docSnap);
 
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -56,21 +71,12 @@ const Wallet = () => {
 
   return (
     <Box
-      bgGradient="linear(to-r, #FF0080, #b742ff)"
-      w="100vw"
-      h="100vh"
       display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
     >
-      <Text
-        textShadow={"1px 1px 2px #222222"}
-        color="white"
-        fontSize="6xl"
-        fontWeight="bold"
-        mb={4}
-      >
+      <Text color="#ff0080" fontSize="6xl" fontWeight="bold" mb={4}>
         WALLET
       </Text>
       <VStack>
@@ -78,10 +84,11 @@ const Wallet = () => {
           if (wallet[coinID] != 0) {
             return (
               <Text
-                textShadow={"1px 1px 2px #222222"}
-                color="white"
+                color={colors[index]}
                 fontSize="xl"
                 key={index}
+                fontWeight="bold"
+                mb={2}
               >
                 {coinID}: {wallet[coinID]}
               </Text>
