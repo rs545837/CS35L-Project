@@ -16,7 +16,7 @@ export const navItems = [
     icon: <AiOutlinePieChart />,
   },
   {
-    title: "Wallet2",
+    title: "Wallet",
     icon: <BiTrendingUp />,
   },
   {
