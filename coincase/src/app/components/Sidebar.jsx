@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const Sidebar = ({ onItemClick }) => {
   const [activeIcon, setActiveIcon] = useState(navItems[0].title);
-  console.log(activeIcon);
+  // console.log(activeIcon);
   return (
     <Wrapper>
       <LogoContainer>
