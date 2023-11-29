@@ -1,3 +1,5 @@
+/** @format */
+
 "use client";
 
 import {
@@ -77,6 +79,7 @@ export default function Header() {
             </Link>
 
             <Link href="/dashboard/home">Home</Link>
+            <Link href="/faq">FAQs</Link>
             <Link href="/coins">Coins</Link>
           </Stack>
         </Flex>
