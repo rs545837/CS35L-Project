@@ -126,7 +126,7 @@ export const UserSettings = () => {
 
   const handleSubmit = async () => {
     try {
-      updatePassword(user, password);
+      await updatePassword(user, password);
       setPassword("");
       setConfirmPassword("");
       setPasswordChanged(1);
