@@ -5,9 +5,10 @@
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Box, Container, Text, VStack } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/firebase";
+import { getData } from "@/app/api";
 
 const colors = [
   "#f9058b",
@@ -25,9 +26,27 @@ const colors = [
 const Wallet = () => {
   const [wallet, setWallet] = useState({});
   const [uid, setUID] = useState("");
+  const [prices, setPrices] = useState({});
+  const [value, setValue] = useState(0);
 
   // Checks if user is authenticated
   useEffect(() => {
+    let temp_prices = {};
+
+    const getCoinPrices = async () => {
+      try {
+        const coin_data = await getData();
+
+        coin_data.map((item) => {
+          temp_prices[item?.symbol?.toString()] = item?.quotes?.USD?.price;
+        });
+
+        setPrices(temp_prices);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const listen = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User authenticated");
@@ -37,7 +56,10 @@ const Wallet = () => {
       }
     });
 
-    return () => listen();
+    return () => {
+      listen();
+      getCoinPrices();
+    };
   }, []);
 
   // Gets wallet info based on UID
@@ -45,8 +67,6 @@ const Wallet = () => {
     const getUser = async () => {
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
-
-      console.log(docSnap);
 
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -69,6 +89,22 @@ const Wallet = () => {
     }
   }, [uid]);
 
+  useEffect(() => {
+    let temp_value = 0;
+
+    const getValue = () => {
+      for (const [key, amount] of Object.entries(wallet)) {
+        temp_value += amount * prices[key.toUpperCase()];
+      }
+
+      setValue(temp_value.toFixed(2));
+    };
+
+    if (prices && wallet) {
+      getValue();
+    }
+  }, [prices, wallet]);
+
   return (
     <Box
       display="flex"
@@ -79,22 +115,30 @@ const Wallet = () => {
       <Text color="#ff0080" fontSize="6xl" fontWeight="bold" mb={4}>
         WALLET
       </Text>
-      <VStack>
+      <VStack align="center">
         {Object.keys(wallet).map((coinID, index) => {
           if (wallet[coinID] != 0) {
             return (
               <Text
                 color={colors[index]}
-                fontSize="xl"
+                fontSize={["md", "l", "xl"]}
                 key={index}
                 fontWeight="bold"
                 mb={2}
               >
-                {coinID}: {wallet[coinID]}
+                {coinID.toUpperCase()}: {wallet[coinID]}
               </Text>
             );
           }
         })}
+        <Text
+          color="#b742ff"
+          fontSize={["l", "xl", "2xl"]}
+          fontWeight="bold"
+          mt={8}
+        >
+          Total Value : ${value}
+        </Text>
       </VStack>
     </Box>
   );
