@@ -5,10 +5,11 @@
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/firebase";
 import { getData } from "@/app/api";
+import styled from "styled-components";
 
 const colors = [
   "#f9058b",
@@ -22,6 +23,12 @@ const colors = [
   "#c931df",
   "#c337ea",
 ];
+
+const CoinImg = styled.img`
+  width: 45px;
+  height: 45px;
+  transition: 300ms all;
+`;
 
 const Wallet = () => {
   const [wallet, setWallet] = useState({});
@@ -119,21 +126,26 @@ const Wallet = () => {
         {Object.keys(wallet).map((coinID, index) => {
           if (wallet[coinID] != 0) {
             return (
-              <Text
-                color={colors[index]}
-                fontSize={["md", "l", "xl"]}
-                key={index}
-                fontWeight="bold"
-                mb={2}
-              >
-                {coinID.toUpperCase()}: {wallet[coinID]}
-              </Text>
+              <HStack>
+                <CoinImg
+                  src={`https://coinicons-api.vercel.app/api/icon/${coinID}`}
+                />
+                <Text
+                  color={colors[index]}
+                  fontSize={["l", "xl", "2xl"]}
+                  key={index}
+                  fontWeight="bold"
+                  mb={2}
+                >
+                  : {wallet[coinID]}
+                </Text>
+              </HStack>
             );
           }
         })}
         <Text
           color="#b742ff"
-          fontSize={["l", "xl", "2xl"]}
+          fontSize={["xl", "2xl", "3xl"]}
           fontWeight="bold"
           mt={8}
         >
