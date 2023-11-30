@@ -27,6 +27,7 @@ const colors = [
 const CoinImg = styled.img`
   width: 45px;
   height: 45px;
+  margin-right: 8px;
   transition: 300ms all;
 `;
 
@@ -137,7 +138,7 @@ const Wallet = () => {
                   fontWeight="bold"
                   mb={2}
                 >
-                  : {wallet[coinID]}
+                  {coinID.toUpperCase()} : {wallet[coinID]}
                 </Text>
               </HStack>
             );
