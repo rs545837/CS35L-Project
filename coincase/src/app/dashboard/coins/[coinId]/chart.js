@@ -6,11 +6,11 @@ import { styled } from "styled-components";
 import axios from "axios";
 
 const ChartContainer = styled.div`
-  flex-basis: 50%;
-  width: 60%;
+  width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 70px;
 `;
 
 export default function Chart({ params }) {
@@ -31,7 +31,6 @@ export default function Chart({ params }) {
     () => fetchCoinHistory(params.coinId), // Note the change here
     { refetchInterval: 10 * 60 * 1000 }
   );
-
   const series = data
     ? data.map((item) => ({
         x: new Date(item.time_open * 1000),

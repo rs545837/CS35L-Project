@@ -59,6 +59,8 @@ export default function CoinList({ isLoggedIn }) {
   if (!isLoading) {
     data = datafetched;
   }
+  console.log(datafetched);
+  console.log(data);
   return (
     <>
       <div>

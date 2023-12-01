@@ -23,7 +23,7 @@ export const StyledLink = styled(Link)`
 const CoinWrapper = styled.div`
   background-color: white;
   height: 80vh;
-  padding: 24px 128px;
+  padding: 24px 64px;
 `;
 
 const TitleContainer = styled.div`
@@ -110,15 +110,6 @@ const PriceAndChart = styled.div`
   align-items: center;
 `;
 
-const LinkBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 24px 0;
-  border-radius: 50%;
-`;
-
 const LinkTo = styled(StyledLink)`
   display: block;
   text-align: center;
@@ -163,30 +154,30 @@ export default function Coin({ params }) {
   };
   const coinWithId = coinName.find((coin) => coin.id === params.coinId).rank;
   let tickersData = coinPrices[coinWithId - 1];
+  console.log(tickersData);
   const { isLoading: tickersLoading, data } = useQuery(
     ["tickers", { params }],
     () => fetchCoinTickers(params.coinId),
     { refetchInterval: 100000 }
   );
-  if (!tickersLoading) {
+
+  if (data != undefined) {
     tickersData = data;
+    console.log(2);
   }
-  //console.log(tickersData);
-  //console.log(coinPrices[coinWithId - 1]);
-  //console.log(coinName[coinWithId - 1].description);
 
   return (
     <CoinWrapper>
       <HelmetProvider>
         <Helmet>
-          <title>{coinId}</title>
+          <title>{tickersData.name}</title>
         </Helmet>
       </HelmetProvider>
       <TitleContainer>
         <TitleImg
           src={`https://coinicons-api.vercel.app/api/icon/${tickersData?.symbol.toLowerCase()}`}
         />
-        <Title>{tickersLoading ? "Loading..." : tickersData?.name}</Title>
+        <Title>{tickersData?.name}</Title>
       </TitleContainer>
       <ContentWrapper>
         <PriceAndChart>

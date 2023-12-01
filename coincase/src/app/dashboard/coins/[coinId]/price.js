@@ -13,6 +13,7 @@ const PriceWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 40px;
 `;
 
 const priceAnimation = keyframes`
@@ -49,7 +50,6 @@ const PercentItems = styled.div`
   background-color: white;
   border-radius: 10px;
   font-size: 20px;
-  padding: 12px 24px;
   margin: 12px;
   animation: ${priceAnimation} 1.5s linear;
   transition: 300ms all;
@@ -65,7 +65,8 @@ const PercentItems = styled.div`
 const BASE_URL = "https://api.coinpaprika.com/v1";
 
 export default function Price({ params }) {
-  let priceData = coinPrices;
+  const coinWithId = coinPrices.find((coin) => coin.id === params.coinId).rank;
+  let priceData = coinPrices[coinWithId - 1];
   const fetchCoinTickers = async () => {
     return await axios
       .get(`${BASE_URL}/tickers/${params.coinId}`)
@@ -77,9 +78,10 @@ export default function Price({ params }) {
     { refetchInterval: 10 * 60 * 1000 }
   );
 
-  if (!isLoading) {
+  if (data != undefined) {
     priceData = data;
   }
+
   let val;
   const getPriceColor = (val) => {
     if (val === undefined) {
@@ -110,9 +112,9 @@ export default function Price({ params }) {
       {
         <PriceWrapper>
           <CurrentPrice>
-            <h3>
+            <h2>
               Current Price : {priceData?.quotes?.USD.price.toFixed(2) ?? 0} USD
-            </h3>
+            </h2>
           </CurrentPrice>
           <PercentChange>
             <PercentItems
