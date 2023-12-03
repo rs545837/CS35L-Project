@@ -14,6 +14,7 @@ import {
   StatHelpText,
   StatArrow,
   StatGroup,
+  useToast,
 } from '@chakra-ui/react'
 
 import {
@@ -34,19 +35,27 @@ import { runTransaction } from "firebase/firestore";
 
 export default function trade() {
   const { authUser } = useAuth();
+  const toast = useToast()
+
+  // General State
+  const [errorMsg, setErrorMsg] = useState("")
+  const [successMsg, setSuccessMsg] = useState("")
   
   // User State
   const [balance, setBalance] = useState(0)
   const [wallet, setWallet] = useState()
 
-  // Buy State
-  const [buyAmount, setBuyAmount] = useState(0)
-  const [buyTicker, setBuyTicker] = useState("")
-
   // Prices
   const [pricesMap, setPricesMap] = useState(null)
   const [pricesArr, setPricesArr] = useState(null)
 
+  // Buy State
+  const [buyAmount, setBuyAmount] = useState(0)
+  const [buyTicker, setBuyTicker] = useState("")
+
+  // Sell State
+
+  // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
     let temp_prices_map = {};
     let temp_prices_arr = [];
@@ -67,7 +76,7 @@ export default function trade() {
         setPricesMap(temp_prices_map);
         setPricesArr(temp_prices_arr)
       } catch (error) {
-        console.log(error);
+        setErrorMsg("Error Loading Crypto Prices")
       }
     };
 
@@ -77,24 +86,45 @@ export default function trade() {
   
       if (docSnap.exists()) {
         let data = docSnap.data();
-        // setPageState((prevState) => ({
-        //   ...prevState,
-        //   firstName: data.first_name,
-        //   lastName: data.last_name,
-        //   balance: data.balance,
-        // }));
         setBalance(data.balance)
-        data.wallet["doge"] = 1.3
-        console.log(data.wallet["doge"])
-
       } else {
-        //console.log("No such document!");
+        setErrorMsg("Error Loading User")
       }
     };
 
     fetchUserFromDB()
     getCoinPrices()
-  }, []);
+  }, [], [balance]);
+
+  useEffect(() => {
+    if (errorMsg) {
+      toast({
+        title: `${errorMsg}`,
+        position: "bottom",
+        isClosable: true,
+        status: "error",
+        duration: 3500,
+        colorScheme: "pink",
+      });
+
+      setErrorMsg("");
+    }
+  }, [errorMsg]);
+
+  useEffect(() => {
+    if (successMsg) {
+      toast({
+        title: `${successMsg}`,
+        position: "bottom",
+        isClosable: true,
+        status: "success",
+        duration: 3500,
+        colorScheme: "green",
+      });
+
+      setSuccessMsg("");
+    }
+  }, [successMsg]);
 
   // Buy Logic
 
@@ -107,8 +137,7 @@ export default function trade() {
     console.log("Ticker: ", buyTicker)
 
     if (balance < buyAmount) {
-      // TODO: REPLACE WITH PROPER ERROR HANDLING
-      console.log("Not enough money to buy")
+      setErrorMsg("Insufficient funds to execute transaction");
       return
     }
 
@@ -134,6 +163,7 @@ export default function trade() {
         
         // Update balance
         dbBal = dbBal - buyAmount
+        setBalance(balance - buyAmount) // locally
 
         // Update wallet
         let dbWallet = data.wallet
@@ -144,9 +174,9 @@ export default function trade() {
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
+      setSuccessMsg("Success!")
     } catch (e) {
-      console.log("Transaction failed: ", e);
-      // TODO: REPLACE WITH PROPER ERROR HANDLING
+      setErrorMsg("Error executing trade. Try again later.")
     }
   }
 
@@ -173,7 +203,7 @@ export default function trade() {
         <TabPanels>
           <TabPanel>
             {/* BUY PANEL */}
-            <NumberInput value={buyAmount} onChange={setBuyAmount} min={0} max={10000}>
+            <NumberInput value={buyAmount} onChange={setBuyAmount} min={0} max={1000000}>
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
