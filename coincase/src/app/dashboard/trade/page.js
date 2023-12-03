@@ -32,10 +32,12 @@ import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { runTransaction } from "firebase/firestore";
+import { useRouter } from 'next/navigation';
 
 export default function trade() {
   const { authUser } = useAuth();
   const toast = useToast()
+  const router = useRouter();
 
   // General State
   const [errorMsg, setErrorMsg] = useState("")
@@ -53,11 +55,12 @@ export default function trade() {
   // Buy State
   const [buyAmount, setBuyAmount] = useState(0)
   const [buyTicker, setBuyTicker] = useState("")
-  const [amountOfCoin, setAmountOfCoin] = useState(0)
+  const [amountOfCoinBuy, setAmountOfCoinBuy] = useState(0)
 
   // Sell State
   const [sellAmount, setSellAmount] = useState(0)
   const [sellTicker, setSellTicker] = useState("")
+  const [amountOfCoinSell, setAmountOfCoinSell] = useState(0)
 
   // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
@@ -139,7 +142,7 @@ export default function trade() {
     setBuyTicker(event.target.value);
   }
 
-  // update amountOfCoin
+  // update amountOfCoinBuy
   useEffect(() => {
     const e = {
       target: {
@@ -160,30 +163,30 @@ export default function trade() {
       if (isNaN(num)) {
         // issue
         setErrorMsg("Invalid Amount")
-        setAmountOfCoin(0)
+        setAmountOfCoinBuy(0)
         return
       }
     } catch (error) {
       // issue
       setErrorMsg("Invalid Amount")
-      setAmountOfCoin(0)
+      setAmountOfCoinBuy(0)
       return
     }
 
     if (num <= 0 || num > 10000000) {
       setErrorMsg("Amount must be between 0 and 10,000,000")
-      setAmountOfCoin(0)
+      setAmountOfCoinBuy(0)
       return
     }
 
     setBuyAmount(num)
 
     if (!buyTicker) {
-      setAmountOfCoin(0)
+      setAmountOfCoinBuy(0)
       return
     }
 
-    setAmountOfCoin(num / pricesMap[buyTicker])
+    setAmountOfCoinBuy(num / pricesMap[buyTicker])
   }
 
   async function handleBuy() {
@@ -228,7 +231,8 @@ export default function trade() {
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success!")
+      setSuccessMsg("Success! Bought " + amountOfCoin + " " + buyTicker)
+      setBuyTicker("")
     } catch (e) {
       setErrorMsg("Error executing trade. Try again later.")
     }
@@ -240,9 +244,103 @@ export default function trade() {
     setSellTicker(event.target.value);
   }
 
-  async function handleSell() {
+  // update amountOfCoinSell
+  useEffect(() => {
+    const e = {
+      target: {
+        value: String(sellAmount)
+      }
+    };
+    handleInputForSell(e)
+  }, [sellTicker]);
 
-  } // You will input cash amount, then on the button it will say. Sell x amount of BTC
+  function handleInputForSell(event) {
+    let inputStr = event.target.value
+    let num = NaN;
+
+    try {
+      // Use parseInt with radix 10 to parse the string as a base-10 integer
+      num = parseInt(inputStr, 10);
+  
+      if (isNaN(num)) {
+        // issue
+        setErrorMsg("Invalid Amount")
+        setAmountOfCoinSell(0)
+        return
+      }
+    } catch (error) {
+      // issue
+      setErrorMsg("Invalid Amount")
+      setAmountOfCoinSell(0)
+      return
+    }
+
+    if (num <= 0 || num > 10000000) {
+      setErrorMsg("Amount must be between 0 and 10,000,000")
+      setAmountOfCoinSell(0)
+      return
+    }
+
+    setSellAmount(num)
+
+    if (!sellTicker) {
+      setAmountOfCoinSell(0)
+      return
+    }
+
+    setAmountOfCoinSell(num / pricesMap[sellTicker])
+  }
+
+  async function handleSell() {
+    console.log("State: ", sellAmount)
+    console.log("Ticker: ", sellTicker)
+    console.log(pricesMap["BTC"])
+    console.log(pricesMap["btc"])
+
+    let amountOfCoin = sellAmount / pricesMap[sellTicker]
+
+    if (amountOfCoin > wallet[sellTicker]) {
+      setErrorMsg("Insufficient balance to execute transaction");
+      return
+    }
+
+    const docRef = doc(db, "users", authUser.uid);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const sfDoc = await transaction.get(docRef);
+        if (!sfDoc.exists()) {
+          return Promise.reject("Error! Try again.");
+        }
+
+        let data = sfDoc.data();
+
+        // Make sure amountOfCoin in wallet >= amountOfCoin trying to sell
+        let dbWallet = data.wallet
+
+        if (dbWallet[sellTicker.toLowerCase()] < amountOfCoin) {
+          return Promise.reject("Insufficient Funds");
+        }
+
+        // Update balance
+        let profit = amountOfCoin * pricesMap[sellTicker]
+        let dbBal = data.balance
+        dbBal = dbBal + profit
+        setBalance(balance + profit) // locally
+
+        // Update wallet
+        dbWallet[sellTicker.toLowerCase()] -= amountOfCoin
+
+        // Push updates
+        transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
+      });
+      console.log("Transaction successfully committed!");
+      setSuccessMsg("Success! Sold " + amountOfCoin + " " + sellTicker)
+      setSellTicker("")
+    } catch (e) {
+      setErrorMsg("Error executing trade. Try again later.")
+    }
+  }
 
   return (
     <>
@@ -277,7 +375,7 @@ export default function trade() {
 
             <Box m={2} />
 
-            <Select placeholder='Select crypto' onChange={handleSelectComponentForBuy}>
+            <Select placeholder='Select crypto' value={buyTicker} onChange={handleSelectComponentForBuy}>
               {pricesArr && pricesArr.map((option) => (
                 <option key={option} value={option.split(' ')[0]}>
                   {option}
@@ -287,27 +385,33 @@ export default function trade() {
 
             <Box m={2} />
 
-            <Button colorScheme='blue' onClick={handleBuy}>Buy {amountOfCoin > 0 && amountOfCoin} {buyTicker}</Button>
+            <Button colorScheme='blue' onClick={handleBuy}>Buy {amountOfCoinBuy > 0 && amountOfCoinBuy} {buyTicker}</Button>
           </TabPanel>
           <TabPanel>
             {/* SELL PANEL */}
-            <NumberInput value={sellAmount} onChange={setSellAmount} min={0} max={1000000}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents='none'
+                color='black.300'
+                fontSize='1.2em'
+                children='$'
+              />
+              <Input onChange={handleInputForSell} type="number" placeholder='Enter amount' />
+            </InputGroup>
 
-            <Select placeholder='Select crypto' onChange={handleSelectComponentForSell}>
+            <Box m={2} />
+
+            <Select placeholder='Select crypto' value={sellTicker} onChange={handleSelectComponentForSell}>
               {!loading && pricesArr && pricesArr.map((option) => (
                 <option key={option} value={option.split(' ')[0]}>
-                  {option}     x{wallet[option.split(' ')[0].toLowerCase()]}
+                  {option}      - Amount: {wallet[option.split(' ')[0].toLowerCase()]}
                 </option>
               ))}
             </Select>
 
-            <Button colorScheme='blue' onClick={handleSell}>Sell {buyTicker}</Button>
+            <Box m={2} />
+
+            <Button colorScheme='blue' onClick={handleSell}>Sell {amountOfCoinSell > 0 && amountOfCoinSell} {sellTicker}</Button>
           </TabPanel>
           <TabPanel>
             <p>three!</p>
