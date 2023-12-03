@@ -80,7 +80,7 @@ function SignIn() {
         duration: 2500,
         colorScheme: "pink",
       });
-
+      setIsButtonPressed(false);
       setErrorMsg("");
     }
   }, [errorMsg, isButtonPressed, toast]);
@@ -112,12 +112,12 @@ function SignIn() {
       .then((userCredential) => {
         //console.log(userCredential);
         // Logged in, navigate to dashboard
-        setError(false);
         setErrorMsg("");
       })
       .catch((error) => {
         console.log(error);
         // Issue logging in, display error code
+        setIsButtonPressed(true);
         setErrorMsg("Invalid Credentials");
       });
   };
