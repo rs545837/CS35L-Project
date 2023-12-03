@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import { navItems } from "../../../static/navItems";
 import Link from "next/link";
+import { Text } from "@chakra-ui/react";
+
 
 const Sidebar = ({ onItemClick }) => {
   const [activeIcon, setActiveIcon] = useState(navItems[0].title);
@@ -13,14 +15,23 @@ const Sidebar = ({ onItemClick }) => {
     <Wrapper>
       <LogoContainer>
         <Link
-          href="/dashboard/home"
+          href="/"
           onClick={() => {
             setActiveIcon("Home");
           }}
         >
-          <Logo>
+          <Text
+          bgGradient="radial(#FF0080, #b742ff)"
+          bgClip="text"
+          fontSize="5xl"
+          fontWeight="bold"
+          textAlign="center"
+        >
+          Coincase
+        </Text>
+          {/* <Logo>
             <Image src={CoinbaseLogo} alt="Coinbase Logo" />
-          </Logo>
+          </Logo> */}
         </Link>
       </LogoContainer>
       <NavItemsContainer>

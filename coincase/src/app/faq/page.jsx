@@ -77,7 +77,7 @@ const faq = () => {
       </AccordionButton>
     </h2>
     <AccordionPanel pb={4} textAlign='center'>
-    Visit our website and click on the "Sign Up" button. Follow the on-screen instructions to complete the registration process.
+    Visit our website and click on the &quot;Sign Up&quot; button. Follow the on-screen instructions to complete the registration process.
     </AccordionPanel>
   </AccordionItem>
 

@@ -1,5 +1,7 @@
 /** @format */
 
+/** @format */
+
 "use client";
 
 import { React, useState, useEffect } from "react";
@@ -67,7 +69,7 @@ function ResetPassword() {
   const [formData, setFormData] = useState({
     email: "",
   });
-
+  const [errorMsg, setErrorMsg] = useState("");
   const toast = useToast();
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
@@ -84,7 +86,7 @@ function ResetPassword() {
 
       setErrorMsg("");
     }
-  }, [errorMsg, isButtonPressed, toast]);
+  }, [isButtonPressed, toast]);
 
   useEffect(() => {
     if (authUser && !isLoading) {

@@ -223,7 +223,7 @@ function SignIn() {
           </FormControl>
           <br />
           <Text>
-            Don't have an account?{""}
+            Don&apos;t have an account?{""}
             <Link href="/Auth/SignUp" color="#b742ff">
               {" "}
               Create one.

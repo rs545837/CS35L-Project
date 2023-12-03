@@ -24,16 +24,14 @@ export default function Home() {
           <Box h="100%" w="100%" padding="1em">
             <Tabs isFitted size="md" variant="enclosed">
               <TabList>
-                <Tab _selected={{ color: "white", bg: "primary.500" }}>
-                  User
-                </Tab>
-                <Tab _selected={{ color: "white", bg: "primary.500" }}>
+                <Tab _selected={{ color: "grey", bg: "primary.500" }}>User</Tab>
+                <Tab _selected={{ color: "grey", bg: "primary.500" }}>
                   Integrations
                 </Tab>
-                <Tab _selected={{ color: "white", bg: "primary.500" }}>
+                <Tab _selected={{ color: "grey", bg: "primary.500" }}>
                   Security
                 </Tab>
-                <Tab _selected={{ color: "white", bg: "primary.500" }}>
+                <Tab _selected={{ color: "grey", bg: "primary.500" }}>
                   Billing
                 </Tab>
               </TabList>
