@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { auth } from "@/app/firebase"
 import { signOut } from "firebase/auth"
 import { redirect } from "next/navigation";
+import { Text } from "@chakra-ui/react";
+import Link from "next/link";
+import { motion, Variants } from "framer-motion";
+import { useState } from "react";
 
 const Header = ({ title }) => {
   function handleSignOut() {
@@ -20,12 +24,27 @@ const Header = ({ title }) => {
     }
   }
 
+  const [isOpen, setIsOpen] = useState(false);
+  const itemVariants = {
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    },
+    closed: { opacity: 0, y: 20, transition: { duration: 0.2 } }
+  };
+
   return (
     <Wrapper>
-      <Title>{title}</Title>
+      <Title>
+      {title}
+      </Title>
       <ButtonsContainer>
-        <Button style={{ backgroundColor: "#3773f5", color: "#000" }} onClick={handleSignOut}>Sign Out</Button>
-
+        <motion.div className="box"
+      whileHover={{ scale: [null, 1.5, 1.4] }}
+      transition={{ duration: 0.3 }}>
+        <Button style={{ backgroundColor: "radial(#FF0080, #b742ff)", color: "#000" }} onClick={handleSignOut}>Sign Out</Button>
+        </motion.div>
       </ButtonsContainer>
     </Wrapper>
   );
@@ -50,9 +69,9 @@ const ButtonsContainer = styled.div`
 `;
 
 const Button = styled.div`
-  border: 1px solid #282b2f;
-  padding: 0.8rem;
-  font-size: 1.3rem;
+  border: 2px solid #282b2f;
+  padding: 0.6rem;
+  font-size: 0.9rem;
   font-weight: 500;
   border-radius: 0.4rem;
   margin-right: 1rem;

@@ -127,7 +127,7 @@ const Wallet = () => {
         {Object.keys(wallet).map((coinID, index) => {
           if (wallet[coinID] != 0) {
             return (
-              <HStack>
+              <HStack key={coinID}>
                 <CoinImg
                   src={`https://coinicons-api.vercel.app/api/icon/${coinID}`}
                 />
