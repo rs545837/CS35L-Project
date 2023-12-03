@@ -3,7 +3,7 @@
 "use client";
 
 import { useAuth } from '@/app/Auth/AuthContext';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, InputLeftElement, InputGroup, Input, Box } from '@chakra-ui/react'
 
 import { getData } from "@/app/api";
 
@@ -40,6 +40,7 @@ export default function trade() {
   // General State
   const [errorMsg, setErrorMsg] = useState("")
   const [successMsg, setSuccessMsg] = useState("")
+  const [loading, isLoading] = useState(false)
   
   // User State
   const [balance, setBalance] = useState(0)
@@ -52,8 +53,11 @@ export default function trade() {
   // Buy State
   const [buyAmount, setBuyAmount] = useState(0)
   const [buyTicker, setBuyTicker] = useState("")
+  const [amountOfCoin, setAmountOfCoin] = useState(0)
 
   // Sell State
+  const [sellAmount, setSellAmount] = useState(0)
+  const [sellTicker, setSellTicker] = useState("")
 
   // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
@@ -81,15 +85,18 @@ export default function trade() {
     };
 
     const fetchUserFromDB = async () => {
+      isLoading(true)
       const docRef = doc(db, "users", authUser.uid);
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
         let data = docSnap.data();
         setBalance(data.balance)
+        setWallet(data.wallet)
       } else {
         setErrorMsg("Error Loading User")
       }
+      isLoading(false)
     };
 
     fetchUserFromDB()
@@ -130,6 +137,53 @@ export default function trade() {
 
   function handleSelectComponentForBuy(event) {
     setBuyTicker(event.target.value);
+  }
+
+  // update amountOfCoin
+  useEffect(() => {
+    const e = {
+      target: {
+        value: String(buyAmount)
+      }
+    };
+    handleInputForBuy(e)
+  }, [buyTicker]);
+
+  function handleInputForBuy(event) {
+    let inputStr = event.target.value
+    let num = NaN;
+
+    try {
+      // Use parseInt with radix 10 to parse the string as a base-10 integer
+      num = parseInt(inputStr, 10);
+  
+      if (isNaN(num)) {
+        // issue
+        setErrorMsg("Invalid Amount")
+        setAmountOfCoin(0)
+        return
+      }
+    } catch (error) {
+      // issue
+      setErrorMsg("Invalid Amount")
+      setAmountOfCoin(0)
+      return
+    }
+
+    if (num <= 0 || num > 10000000) {
+      setErrorMsg("Amount must be between 0 and 10,000,000")
+      setAmountOfCoin(0)
+      return
+    }
+
+    setBuyAmount(num)
+
+    if (!buyTicker) {
+      setAmountOfCoin(0)
+      return
+    }
+
+    setAmountOfCoin(num / pricesMap[buyTicker])
   }
 
   async function handleBuy() {
@@ -182,6 +236,14 @@ export default function trade() {
 
   // Sell Logic...
 
+  function handleSelectComponentForSell(event) {
+    setSellTicker(event.target.value);
+  }
+
+  async function handleSell() {
+
+  } // You will input cash amount, then on the button it will say. Sell x amount of BTC
+
   return (
     <>
       <Stat>
@@ -202,14 +264,18 @@ export default function trade() {
         </TabList>
         <TabPanels>
           <TabPanel>
-            {/* BUY PANEL */}
-            <NumberInput value={buyAmount} onChange={setBuyAmount} min={0} max={1000000}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            {/* BUY PANEL */}  
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents='none'
+                color='black.300'
+                fontSize='1.2em'
+                children='$'
+              />
+              <Input onChange={handleInputForBuy} type="number" placeholder='Enter amount' />
+            </InputGroup>
+
+            <Box m={2} />
 
             <Select placeholder='Select crypto' onChange={handleSelectComponentForBuy}>
               {pricesArr && pricesArr.map((option) => (
@@ -219,10 +285,29 @@ export default function trade() {
               ))}
             </Select>
 
-            <Button colorScheme='blue' onClick={handleBuy}>Buy {buyTicker}</Button>
+            <Box m={2} />
+
+            <Button colorScheme='blue' onClick={handleBuy}>Buy {amountOfCoin > 0 && amountOfCoin} {buyTicker}</Button>
           </TabPanel>
           <TabPanel>
-            <p>two!</p>
+            {/* SELL PANEL */}
+            <NumberInput value={sellAmount} onChange={setSellAmount} min={0} max={1000000}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+
+            <Select placeholder='Select crypto' onChange={handleSelectComponentForSell}>
+              {!loading && pricesArr && pricesArr.map((option) => (
+                <option key={option} value={option.split(' ')[0]}>
+                  {option}     x{wallet[option.split(' ')[0].toLowerCase()]}
+                </option>
+              ))}
+            </Select>
+
+            <Button colorScheme='blue' onClick={handleSell}>Sell {buyTicker}</Button>
           </TabPanel>
           <TabPanel>
             <p>three!</p>
