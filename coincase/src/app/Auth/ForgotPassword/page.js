@@ -43,6 +43,7 @@ import {
 import { auth } from "@/app/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Logo from "@/app/components/logo";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 import {
   ViewIcon,
@@ -58,15 +59,15 @@ import { useAuth } from "../AuthContext";
 import { motion } from "framer-motion";
 import LogoRepeat from "@/app/components/logoRepeating";
 
-function SignIn() {
+function ResetPassword() {
   const { isLoading, authUser } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
+  // const [email, setEmail] = useState("");
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
   });
-  const [errorMsg, setErrorMsg] = useState("");
+
   const toast = useToast();
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
@@ -91,35 +92,14 @@ function SignIn() {
     }
   }, [isLoading, authUser]);
 
-  const handleShow = () => setShowPassword(!showPassword);
-
   const handleInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMsg("");
   };
 
-  const handleSignIn = (e) => {
-    e.preventDefault();
-    setIsButtonPressed(true);
-    if (!formData.email || !formData.password) {
-      setErrorMsg("Please enter your email and password");
-      return;
-    }
-    setIsButtonPressed(false);
-    console.log(formData.email);
-    console.log(formData.password);
-    signInWithEmailAndPassword(auth, formData.email, formData.password)
-      .then((userCredential) => {
-        //console.log(userCredential);
-        // Logged in, navigate to dashboard
-        setError(false);
-        setErrorMsg("");
-      })
-      .catch((error) => {
-        console.log(error);
-        // Issue logging in, display error code
-        setErrorMsg("Invalid Credentials");
-      });
+  const triggerResetEmail = async () => {
+    await sendPasswordResetEmail(auth, formData.email);
+    console.log("Password reset email sent");
   };
 
   return (
@@ -152,6 +132,10 @@ function SignIn() {
           w="100%"
           h="100%"
         >
+          <br />
+          <br />
+          <br />
+          <br />
           <CardHeader>
             <Heading
               bgGradient="linear(to-r, #FF0080, #b742ff)"
@@ -159,7 +143,7 @@ function SignIn() {
               fontWeight="bold"
               textAlign="center"
             >
-              Welcome back!
+              Enter Your Email!
             </Heading>
           </CardHeader>
           <FormControl>
@@ -177,30 +161,7 @@ function SignIn() {
                   focusBorderColor="pink.400"
                 />
               </InputGroup>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none">
-                  <LockIcon color="#FF0080" />
-                </InputLeftElement>
-                <Input
-                  variant="flushed"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  name="password"
-                  onChange={handleInput}
-                  _placeholder={{ opacity: 0.8, color: "gray.500" }}
-                  focusBorderColor="pink.400"
-                />
-                <InputRightElement>
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={handleShow}
-                    color="#FF0080"
-                  >
-                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+
               <Button
                 as={motion.button}
                 fontSize={"sm"}
@@ -215,30 +176,17 @@ function SignIn() {
                 whileTap={{
                   scale: 0.9,
                 }}
-                onClick={handleSignIn}
+                onClick={triggerResetEmail}
               >
-                Sign In
+                Submit
               </Button>
             </VStack>
           </FormControl>
           <br />
-          <Text>
-            Don't have an account?{""}
-            <Link href="/Auth/SignUp" color="#b742ff">
-              {" "}
-              Create one.
-            </Link>
-            <br />
-            Forgot Password?
-            <Link href="/Auth/ForgotPassword" color="#b742ff">
-              {" "}
-              Click Here.
-            </Link>
-          </Text>
         </Card>
       </Container>
     </Flex>
   );
 }
 
-export default SignIn;
+export default ResetPassword;
