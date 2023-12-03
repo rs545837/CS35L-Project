@@ -167,6 +167,14 @@ function SignUp() {
       return;
     }
 
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);                    
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashHex;
+  }
+
     setIsButtonPressed(false);
     try {
       const response = await createUserWithEmailAndPassword(
@@ -174,7 +182,7 @@ function SignUp() {
         formData.email,
         formData.password
       );
-
+      const wallet_id = await sha256(formData.email + formData.password);
       const usersCollection = collection(db, "users");
       const userDocRef = doc(usersCollection, response.user.uid);
       try {
@@ -183,6 +191,7 @@ function SignUp() {
           last_name: formData.lastName,
           balance: 1000,
           date_of_birth: Timestamp.fromDate(new Date(formData.dateOfBirth)),
+          wallet_address: wallet_id,
           wallet: {
             btc: 0,
             eth: 0,

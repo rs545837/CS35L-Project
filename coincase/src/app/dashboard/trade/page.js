@@ -17,14 +17,6 @@ import {
   useToast,
 } from '@chakra-ui/react'
 
-import {
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-} from '@chakra-ui/react'
-
 import { Select } from '@chakra-ui/react'
 
 import { Button, ButtonGroup } from '@chakra-ui/react'
@@ -414,7 +406,7 @@ export default function trade() {
             <Button colorScheme='blue' onClick={handleSell}>Sell {amountOfCoinSell > 0 && amountOfCoinSell} {sellTicker}</Button>
           </TabPanel>
           <TabPanel>
-            <p>three!</p>
+            {/* SEND PANEL */}
           </TabPanel>
         </TabPanels>
       </Tabs>
