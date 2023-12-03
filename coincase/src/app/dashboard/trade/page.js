@@ -34,12 +34,6 @@ import { runTransaction } from "firebase/firestore";
 
 export default function trade() {
   const { authUser } = useAuth();
-
-  const [userState, setUserState] = useState({
-    isLoading: false,
-    balance: 0,
-    
-  });
   
   // User State
   const [balance, setBalance] = useState(0)
@@ -102,6 +96,8 @@ export default function trade() {
     getCoinPrices()
   }, []);
 
+  // Buy Logic
+
   function handleSelectComponentForBuy(event) {
     setBuyTicker(event.target.value);
   }
@@ -154,11 +150,18 @@ export default function trade() {
     }
   }
 
+  // Sell Logic...
+
   return (
     <>
       <Stat>
         <StatLabel>Cash Balance</StatLabel>
-        <StatNumber>${balance}</StatNumber>
+        <StatNumber>${balance.toLocaleString('en-US', {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </StatNumber>
       </Stat>
 
       <Tabs isFitted variant='enclosed'>
