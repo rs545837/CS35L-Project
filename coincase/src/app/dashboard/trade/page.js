@@ -66,6 +66,7 @@ export default function trade() {
   const [loading, isLoading] = useState(false);
 
   // User State
+  const [cashInput, setCashInput] = useState("");
   const [balance, setBalance] = useState(0);
   const [wallet, setWallet] = useState();
   const [ticker, setTicker] = useState("");
@@ -195,7 +196,7 @@ export default function trade() {
   }, [ticker]);
 
   function handleInputForBuy(event) {
-    let inputStr = event.target.value;
+    const inputStr = event.target.value;
     let num = NaN;
 
     try {
@@ -215,8 +216,8 @@ export default function trade() {
       return;
     }
 
-    if (num < 0 || num > 10000000) {
-      setErrorMsg("Amount must be between 0 and 10,000,000");
+    if (num <= 0 || num >= 10000000) {
+      setErrorMsg("Amount must be greater than 0 and less 10,000,000");
       setAmountOfCoinBuy(0);
       return;
     }
@@ -236,6 +237,13 @@ export default function trade() {
     console.log("Ticker: ", ticker);
 
     setIsButtonPressed(true);
+
+    if (buyAmount <= 0 || buyAmount >= 10000000) {
+      setErrorMsg("Invalid Amount.");
+      setAmountOfCoinSell(0);
+      return;
+    }
+
     if (balance < buyAmount) {
       setErrorMsg("Insufficient funds to execute transaction");
       return;
@@ -271,8 +279,27 @@ export default function trade() {
         dbWallet[ticker.toLowerCase()] += amountOfCoin;
         console.log(dbWallet);
 
+        // Update transaction history
+        const transaction_details = {
+          type: "buy",
+          prevBalance: balance,
+          newBalance: balance - buyAmount,
+          cashAmount: buyAmount,
+          coinAmount: amountOfCoin,
+          coin: ticker,
+          timestamp: new Date().toUTCString(),
+        };
+        const dbTransactionHistory = [
+          ...data.transaction_history,
+          transaction_details,
+        ];
+
         // Push updates
-        transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
+        transaction.update(docRef, {
+          balance: dbBal,
+          wallet: dbWallet,
+          transaction_history: dbTransactionHistory,
+        });
       });
       console.log("Transaction successfully committed!");
       setSuccessMsg("Success! Bought " + amountOfCoin + " " + ticker);
@@ -280,8 +307,8 @@ export default function trade() {
       setTicker("");
     } catch (e) {
       setIsButtonPressed(true);
-
-      setErrorMsg("Error executing trade. Try again later.");
+      console.error(e);
+      setErrorMsg("Error executing trade.");
     }
   }
 
@@ -298,7 +325,7 @@ export default function trade() {
   }, [ticker]);
 
   function handleInputForSell(event) {
-    let inputStr = event.target.value;
+    const inputStr = event.target.value;
     let num = NaN;
 
     try {
@@ -318,12 +345,6 @@ export default function trade() {
       return;
     }
 
-    if (num < 0 || num > 10000000) {
-      setErrorMsg("Amount must be between 0 and 10,000,000");
-      setAmountOfCoinSell(0);
-      return;
-    }
-
     setSellAmount(num);
 
     if (!ticker) {
@@ -338,6 +359,12 @@ export default function trade() {
     console.log("State: ", sellAmount);
     console.log("Ticker: ", ticker);
     setIsButtonPressed(true);
+
+    if (sellAmount <= 0 || sellAmount >= 10000000) {
+      setErrorMsg("Invalid Amount.");
+      setAmountOfCoinSell(0);
+      return;
+    }
 
     let amountOfCoin = sellAmount / pricesMap[ticker];
 
@@ -374,8 +401,27 @@ export default function trade() {
         // Update wallet
         dbWallet[ticker.toLowerCase()] -= amountOfCoin;
 
+        // Update transaction history
+        const transaction_details = {
+          type: "sell",
+          prevBalance: balance,
+          newBalance: balance + sellAmount,
+          cashAmount: sellAmount,
+          coinAmount: amountOfCoin,
+          coin: ticker,
+          timestamp: new Date().toUTCString(),
+        };
+        const dbTransactionHistory = [
+          ...data.transaction_history,
+          transaction_details,
+        ];
+
         // Push updates
-        transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
+        transaction.update(docRef, {
+          balance: dbBal,
+          wallet: dbWallet,
+          transaction_history: dbTransactionHistory,
+        });
       });
       console.log("Transaction successfully committed!");
       setSuccessMsg("Success! Sold " + amountOfCoin + " " + ticker);
@@ -384,14 +430,14 @@ export default function trade() {
     } catch (e) {
       setIsButtonPressed(true);
 
-      setErrorMsg("Error executing trade. Try again later.");
+      setErrorMsg("Error executing trade.");
     }
   }
 
   // Send Logic
 
   function handleInputForSend(event) {
-    let inputStr = event.target.value;
+    const inputStr = event.target.value;
     let num = NaN;
 
     try {
@@ -426,7 +472,8 @@ export default function trade() {
     setIsButtonPressed(true);
 
     if (sendAmount <= 0) {
-      setErrorMsg("Insufficient amount");
+      setErrorMsg("Insufficient Amount.");
+      return;
     }
 
     if (sendAmount > wallet[ticker]) {
@@ -435,45 +482,45 @@ export default function trade() {
     }
 
     if (!recipient) {
-      setErrorMsg("Enter Receipient Address");
+      setErrorMsg("Enter recipient Address");
     }
     setIsButtonPressed(false);
 
-    // Check if receipient address is correct
+    // Check if recipient address is correct
     const q = query(
       collection(db, "users"),
       where("wallet_address", "==", recipient)
     );
-    let receipientDocId = null;
+    let recipientDocId = null;
 
     await getDocs(q)
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          receipientDocId = doc.id;
+          recipientDocId = doc.id;
         });
       })
       .catch((error) => {
         console.error("Error querying Firestore:", error);
         setIsButtonPressed(true);
-        setErrorMsg("Error Finding Receipient");
+        setErrorMsg("Error Finding recipient");
         return;
       });
 
     setIsButtonPressed(true);
 
-    if (!receipientDocId) {
-      setErrorMsg("Error Finding Receipient");
+    if (!recipientDocId) {
+      setErrorMsg("Error Finding recipient");
       return;
     }
 
-    if (receipientDocId == authUser.id) {
+    if (recipientDocId == authUser.id) {
       setErrorMsg("Can't send to yourself!");
       return;
     }
     setIsButtonPressed(false);
 
     const docRefSender = doc(db, "users", authUser.uid);
-    const docRefReceipient = doc(db, "users", receipientDocId);
+    const docRefRecipient = doc(db, "users", recipientDocId);
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -482,16 +529,16 @@ export default function trade() {
           return Promise.reject("Error! Try again.");
         }
 
-        const refReceipientDoc = await transaction.get(docRefReceipient);
-        if (!refReceipientDoc.exists()) {
+        const docRefRecipientDoc = await transaction.get(docRefRecipient);
+        if (!docRefRecipientDoc.exists()) {
           return Promise.reject("Error! Try again.");
         }
 
-        let receipientData = refReceipientDoc.data();
+        let recipientData = docRefRecipientDoc.data();
         let senderData = refSenderDoc.data();
 
         // Make sure sender has enough of coin to send
-        let receipientWallet = receipientData.wallet;
+        let recipientWallet = recipientData.wallet;
         let senderWallet = senderData.wallet;
 
         if (senderWallet[ticker.toLowerCase()] < sendAmount) {
@@ -499,15 +546,50 @@ export default function trade() {
         }
 
         // Now, execute trade
-        receipientWallet[ticker.toLowerCase()] += sendAmount;
+        recipientWallet[ticker.toLowerCase()] += sendAmount;
         senderWallet[ticker.toLowerCase()] -= sendAmount;
 
-        console.log("Rec wallet: ", receipientWallet);
+        console.log("Rec wallet: ", recipientWallet);
         console.log("sender wallet: ", senderWallet);
 
+        // Update transaction history
+        const sender_transaction_details = {
+          type: "send",
+          prevCoinBalance: senderWallet[ticker.toLowerCase()],
+          newCoinBalance: senderWallet[ticker.toLowerCase()] - sendAmount,
+          coinAmount: sendAmount,
+          coin: ticker,
+          recipient: recipientData.wallet_address,
+          timestamp: new Date().toUTCString(),
+        };
+        const recipient_transaction_details = {
+          type: "receive",
+          prevCoinBalance: recipientWallet[ticker.toLowerCase()],
+          newCoinBalance: recipientWallet[ticker.toLowerCase()] + sendAmount,
+          coinAmount: sendAmount,
+          coin: ticker,
+          sender: senderData.wallet_address,
+          timestamp: new Date().toUTCString(),
+        };
+        const recipientTransactionHistory = [
+          ...recipientData.transaction_history,
+          recipient_transaction_details,
+        ];
+
+        const senderTransactionHistory = [
+          ...senderData.transaction_history,
+          sender_transaction_details,
+        ];
+
         // Push updates
-        transaction.update(docRefReceipient, { wallet: receipientWallet });
-        transaction.update(docRefSender, { wallet: senderWallet });
+        transaction.update(docRefRecipient, {
+          wallet: recipientWallet,
+          transaction_history: recipientTransactionHistory,
+        });
+        transaction.update(docRefSender, {
+          wallet: senderWallet,
+          transaction_history: senderTransactionHistory,
+        });
       });
       console.log("Transaction successfully committed!");
       setSuccessMsg("Success! Sent " + sendAmount + " " + ticker);
@@ -515,9 +597,9 @@ export default function trade() {
       setTicker("");
       setSendUpdate(!sendUpdate);
     } catch (e) {
-      setIsButtonPressed(false);
-      setErrorMsg("Error executing trade. Try again later.");
-      console.log(e);
+      setIsButtonPressed(true);
+      setErrorMsg("Error executing trade.");
+      console.error(e);
     }
   }
 
@@ -542,6 +624,7 @@ export default function trade() {
           value={ticker}
           onChange={handleTicker}
           variant="flushed"
+          _hover={{ borderColor: "pink.400" }}
           _placeholder={{ opacity: 0.8, color: "gray.500" }}
           focusBorderColor="pink.400"
         >
@@ -598,7 +681,7 @@ export default function trade() {
         <TabPanels>
           {/* BUY PANEL */}
           <TabPanel>
-            <VStack>
+            <VStack spacing={4}>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -642,7 +725,7 @@ export default function trade() {
           </TabPanel>
           <TabPanel>
             {/* SELL PANEL */}
-            <VStack>
+            <VStack spacing={4}>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -686,7 +769,7 @@ export default function trade() {
           </TabPanel>
           <TabPanel>
             {/* SEND PANEL */}
-            <VStack>
+            <VStack spacing={4}>
               <InputGroup mt={4}>
                 <InputLeftElement
                   pointerEvents="none"
