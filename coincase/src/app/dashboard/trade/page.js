@@ -186,7 +186,7 @@ export default function trade() {
       return
     }
 
-    setAmountOfCoinBuy(num / pricesMap[buyTicker]);
+    setAmountOfCoinBuy((num / pricesMap[buyTicker]).toFixed(5));
   }
 
   async function handleBuy() {
@@ -198,7 +198,7 @@ export default function trade() {
       return
     }
 
-    let amountOfCoin = buyAmount / pricesMap[buyTicker];
+    let amountOfCoin = (buyAmount / pricesMap[buyTicker]).toFixed(5);
 
     const docRef = doc(db, "users", authUser.uid);
 
@@ -288,7 +288,7 @@ export default function trade() {
       return
     }
 
-    setAmountOfCoinSell(num / pricesMap[sellTicker])
+    setAmountOfCoinSell((num / pricesMap[sellTicker]).toFixed(5))
   }
 
   async function handleSell() {
