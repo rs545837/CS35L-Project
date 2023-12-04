@@ -21,10 +21,12 @@ import { Select } from '@chakra-ui/react'
 
 import { Button, ButtonGroup } from '@chakra-ui/react'
 import { db } from "@/app/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { runTransaction } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
+import { BsCurrencyBitcoin } from 'react-icons/bs';
+import { LockIcon } from '@chakra-ui/icons';
 
 export default function trade() {
   const { authUser } = useAuth();
@@ -53,6 +55,12 @@ export default function trade() {
   const [sellAmount, setSellAmount] = useState(0)
   const [sellTicker, setSellTicker] = useState("")
   const [amountOfCoinSell, setAmountOfCoinSell] = useState(0)
+
+  // Send State
+  const [sendAmount, setSendAmount] = useState(0)
+  const [sendTicker, setSendTicker] = useState("")
+  const [recipient, setRecipient] = useState("")
+  const [sendUpdate, setSendUpdate] = useState(false) // just used to update wallet after send
 
   // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
@@ -96,7 +104,7 @@ export default function trade() {
 
     fetchUserFromDB()
     getCoinPrices()
-  }, [], [balance]);
+  }, [balance, sendUpdate]);
 
   useEffect(() => {
     if (errorMsg) {
@@ -286,8 +294,6 @@ export default function trade() {
   async function handleSell() {
     console.log("State: ", sellAmount)
     console.log("Ticker: ", sellTicker)
-    console.log(pricesMap["BTC"])
-    console.log(pricesMap["btc"])
 
     let amountOfCoin = sellAmount / pricesMap[sellTicker]
 
@@ -331,6 +337,132 @@ export default function trade() {
       setSellTicker("")
     } catch (e) {
       setErrorMsg("Error executing trade. Try again later.")
+    }
+  }
+
+  // Send Logic
+
+  function handleSelectComponentForSend(event) {
+    setSendTicker(event.target.value);
+  }
+
+  function handleInputForSend(event) {
+    let inputStr = event.target.value;
+    let num = NaN;
+
+    try {
+      // Use parseInt with radix 10 to parse the string as a base-10 integer
+      num = parseInt(inputStr, 10);
+  
+      if (isNaN(num)) {
+        // issue
+        setErrorMsg("Invalid Amount");
+        setSendAmount(0);
+        return
+      }
+    } catch (error) {
+      // issue
+      setErrorMsg("Invalid Amount");
+      setSendAmount(0);
+      return
+    }
+
+    if (num <= 0 || num > 10000000) {
+      setErrorMsg("Amount must be between 0 and 10,000,000");
+      setSendAmount(0);
+      return
+    }
+
+    setSendAmount(num);
+  }
+
+  async function handleSend() {
+    console.log("State: ", sendAmount);
+    console.log("Ticker: ", sendTicker);
+
+    if (sendAmount <= 0) {
+      setErrorMsg("Insufficient amount");
+    }
+
+    if (sendAmount > wallet[sellTicker]) {
+      setErrorMsg("Insufficient balance to execute transaction");
+      return
+    }
+    
+    if (!recipient) {
+      setErrorMsg("Enter Receipient Address");
+    }
+
+    // Check if receipient address is correct
+    const q = query(collection(db, 'users'), where('wallet_address', '==', recipient));
+    let receipientDocId = null;
+
+    await getDocs(q)
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          receipientDocId = doc.id;
+        });
+      })
+      .catch((error) => {
+        console.error('Error querying Firestore:', error);
+        setErrorMsg("Error Finding Receipient");
+        return
+      });
+    
+    if (!receipientDocId) {
+      setErrorMsg("Error Finding Receipient");
+      return
+    }
+
+    if (receipientDocId == authUser.id) {
+      setErrorMsg("Can't send to yourself!")
+      return
+    }
+
+    const docRefSender = doc(db, "users", authUser.uid);
+    const docRefReceipient = doc(db, "users", receipientDocId);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const refSenderDoc = await transaction.get(docRefSender);
+        if (!refSenderDoc.exists()) {
+          return Promise.reject("Error! Try again.");
+        }
+
+        const refReceipientDoc = await transaction.get(docRefReceipient);
+        if (!refReceipientDoc.exists()) {
+          return Promise.reject("Error! Try again.");
+        }
+
+        let receipientData = refReceipientDoc.data();
+        let senderData = refSenderDoc.data();
+
+        // Make sure sender has enough of coin to send
+        let receipientWallet = receipientData.wallet;
+        let senderWallet = senderData.wallet;
+
+        if (senderWallet[sendTicker.toLowerCase()] < sendAmount) {
+          return Promise.reject("Insufficient Funds");
+        }
+
+        // Now, execute trade
+        receipientWallet[sendTicker.toLowerCase()] += sendAmount;
+        senderWallet[sendTicker.toLowerCase()] -= sendAmount;
+
+        console.log("Rec wallet: ", receipientWallet);
+        console.log("sender wallet: ", senderWallet);
+
+        // Push updates
+        transaction.update(docRefReceipient, { wallet: receipientWallet });
+        transaction.update(docRefSender, { wallet: senderWallet });
+      });
+      console.log("Transaction successfully committed!");
+      setSuccessMsg("Success! Sent " + sendAmount + " " + sendTicker);
+      setSendTicker("");
+      setSendUpdate(!sendUpdate);
+    } catch (e) {
+      setErrorMsg("Error executing trade. Try again later.");
+      console.log(e);
     }
   }
 
@@ -407,6 +539,37 @@ export default function trade() {
           </TabPanel>
           <TabPanel>
             {/* SEND PANEL */}
+
+            <InputGroup mt={4}>
+              <InputLeftElement pointerEvents="none" children={<LockIcon />} />
+              <Input onChange={(e) => {setRecipient(e.target.value)}} type="text" placeholder="Recipient Address" />
+            </InputGroup>
+
+            <Box m={2} />
+
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents='none'
+                color='black.300'
+                fontSize='1.2em'
+                children={<BsCurrencyBitcoin />}
+              />
+              <Input onChange={handleInputForSend} type="number" placeholder='Enter amount' />
+            </InputGroup>
+
+            <Box m={2} />
+
+            <Select placeholder='Select crypto' value={sendTicker} onChange={handleSelectComponentForSend}>
+              {!loading && pricesArr && pricesArr.map((option) => (
+                <option key={option} value={option.split(' ')[0]}>
+                  {option}      - Amount: {wallet[option.split(' ')[0].toLowerCase()]}
+                </option>
+              ))}
+            </Select>
+
+            <Box m={2} />
+
+            <Button colorScheme='blue' onClick={handleSend}>Send {sendTicker}</Button>
           </TabPanel>
         </TabPanels>
       </Tabs>
