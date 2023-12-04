@@ -30,37 +30,37 @@ import { LockIcon } from '@chakra-ui/icons';
 
 export default function trade() {
   const { authUser } = useAuth();
-  const toast = useToast()
+  const toast = useToast();
   const router = useRouter();
 
   // General State
-  const [errorMsg, setErrorMsg] = useState("")
-  const [successMsg, setSuccessMsg] = useState("")
-  const [loading, isLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [loading, isLoading] = useState(false);
   
   // User State
-  const [balance, setBalance] = useState(0)
-  const [wallet, setWallet] = useState()
+  const [balance, setBalance] = useState(0);
+  const [wallet, setWallet] = useState();
 
   // Prices
-  const [pricesMap, setPricesMap] = useState(null)
-  const [pricesArr, setPricesArr] = useState(null)
+  const [pricesMap, setPricesMap] = useState(null);
+  const [pricesArr, setPricesArr] = useState(null);
 
   // Buy State
-  const [buyAmount, setBuyAmount] = useState(0)
-  const [buyTicker, setBuyTicker] = useState("")
-  const [amountOfCoinBuy, setAmountOfCoinBuy] = useState(0)
+  const [buyAmount, setBuyAmount] = useState(0);
+  const [buyTicker, setBuyTicker] = useState("");
+  const [amountOfCoinBuy, setAmountOfCoinBuy] = useState(0);
 
   // Sell State
-  const [sellAmount, setSellAmount] = useState(0)
-  const [sellTicker, setSellTicker] = useState("")
-  const [amountOfCoinSell, setAmountOfCoinSell] = useState(0)
+  const [sellAmount, setSellAmount] = useState(0);
+  const [sellTicker, setSellTicker] = useState("");
+  const [amountOfCoinSell, setAmountOfCoinSell] = useState(0);
 
   // Send State
-  const [sendAmount, setSendAmount] = useState(0)
-  const [sendTicker, setSendTicker] = useState("")
-  const [recipient, setRecipient] = useState("")
-  const [sendUpdate, setSendUpdate] = useState(false) // just used to update wallet after send
+  const [sendAmount, setSendAmount] = useState(0);
+  const [sendTicker, setSendTicker] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [sendUpdate, setSendUpdate] = useState(false); // just used to update wallet after send
 
   // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
@@ -81,9 +81,9 @@ export default function trade() {
         });
 
         setPricesMap(temp_prices_map);
-        setPricesArr(temp_prices_arr)
+        setPricesArr(temp_prices_arr);
       } catch (error) {
-        setErrorMsg("Error Loading Crypto Prices")
+        setErrorMsg("Error Loading Crypto Prices");
       }
     };
 
@@ -94,16 +94,16 @@ export default function trade() {
   
       if (docSnap.exists()) {
         let data = docSnap.data();
-        setBalance(data.balance)
-        setWallet(data.wallet)
+        setBalance(data.balance);
+        setWallet(data.wallet);
       } else {
-        setErrorMsg("Error Loading User")
+        setErrorMsg("Error Loading User");
       }
-      isLoading(false)
+      isLoading(false);
     };
 
-    fetchUserFromDB()
-    getCoinPrices()
+    fetchUserFromDB();
+    getCoinPrices();
   }, [balance, sendUpdate]);
 
   useEffect(() => {
@@ -149,11 +149,11 @@ export default function trade() {
         value: String(buyAmount)
       }
     };
-    handleInputForBuy(e)
+    handleInputForBuy(e);
   }, [buyTicker]);
 
   function handleInputForBuy(event) {
-    let inputStr = event.target.value
+    let inputStr = event.target.value;
     let num = NaN;
 
     try {
@@ -162,43 +162,43 @@ export default function trade() {
   
       if (isNaN(num)) {
         // issue
-        setErrorMsg("Invalid Amount")
-        setAmountOfCoinBuy(0)
+        setErrorMsg("Invalid Amount");
+        setAmountOfCoinBuy(0);
         return
       }
     } catch (error) {
       // issue
-      setErrorMsg("Invalid Amount")
-      setAmountOfCoinBuy(0)
+      setErrorMsg("Invalid Amount");
+      setAmountOfCoinBuy(0);
       return
     }
 
-    if (num <= 0 || num > 10000000) {
-      setErrorMsg("Amount must be between 0 and 10,000,000")
-      setAmountOfCoinBuy(0)
+    if (num < 0 || num > 10000000) {
+      setErrorMsg("Amount must be between 0 and 10,000,000");
+      setAmountOfCoinBuy(0);
       return
     }
 
-    setBuyAmount(num)
+    setBuyAmount(num);
 
     if (!buyTicker) {
-      setAmountOfCoinBuy(0)
+      setAmountOfCoinBuy(0);
       return
     }
 
-    setAmountOfCoinBuy(num / pricesMap[buyTicker])
+    setAmountOfCoinBuy(num / pricesMap[buyTicker]);
   }
 
   async function handleBuy() {
-    console.log("State: ", buyAmount)
-    console.log("Ticker: ", buyTicker)
+    console.log("State: ", buyAmount);
+    console.log("Ticker: ", buyTicker);
 
     if (balance < buyAmount) {
       setErrorMsg("Insufficient funds to execute transaction");
       return
     }
 
-    let amountOfCoin = buyAmount / pricesMap[buyTicker]
+    let amountOfCoin = buyAmount / pricesMap[buyTicker];
 
     const docRef = doc(db, "users", authUser.uid);
 
@@ -212,29 +212,29 @@ export default function trade() {
         let data = sfDoc.data();
 
         // Make sure balance >= buyAmount
-        let dbBal = data.balance
+        let dbBal = data.balance;
 
         if (dbBal < buyAmount) {
           return Promise.reject("Insufficient Funds");
         }
         
         // Update balance
-        dbBal = dbBal - buyAmount
-        setBalance(balance - buyAmount) // locally
+        dbBal = dbBal - buyAmount;
+        setBalance(balance - buyAmount); // locally
 
         // Update wallet
-        let dbWallet = data.wallet
-        dbWallet[buyTicker.toLowerCase()] += amountOfCoin
-        console.log(dbWallet)
+        let dbWallet = data.wallet;
+        dbWallet[buyTicker.toLowerCase()] += amountOfCoin;
+        console.log(dbWallet);
 
         // Push updates
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success! Bought " + amountOfCoin + " " + buyTicker)
-      setBuyTicker("")
+      setSuccessMsg("Success! Bought " + amountOfCoin + " " + buyTicker);
+      setBuyTicker("");
     } catch (e) {
-      setErrorMsg("Error executing trade. Try again later.")
+      setErrorMsg("Error executing trade. Try again later.");
     }
   }
 
@@ -251,11 +251,11 @@ export default function trade() {
         value: String(sellAmount)
       }
     };
-    handleInputForSell(e)
+    handleInputForSell(e);
   }, [sellTicker]);
 
   function handleInputForSell(event) {
-    let inputStr = event.target.value
+    let inputStr = event.target.value;
     let num = NaN;
 
     try {
@@ -264,27 +264,27 @@ export default function trade() {
   
       if (isNaN(num)) {
         // issue
-        setErrorMsg("Invalid Amount")
-        setAmountOfCoinSell(0)
+        setErrorMsg("Invalid Amount");
+        setAmountOfCoinSell(0);
         return
       }
     } catch (error) {
       // issue
-      setErrorMsg("Invalid Amount")
-      setAmountOfCoinSell(0)
+      setErrorMsg("Invalid Amount");
+      setAmountOfCoinSell(0);
       return
     }
 
-    if (num <= 0 || num > 10000000) {
-      setErrorMsg("Amount must be between 0 and 10,000,000")
-      setAmountOfCoinSell(0)
+    if (num < 0 || num > 10000000) {
+      setErrorMsg("Amount must be between 0 and 10,000,000");
+      setAmountOfCoinSell(0);
       return
     }
 
-    setSellAmount(num)
+    setSellAmount(num);
 
     if (!sellTicker) {
-      setAmountOfCoinSell(0)
+      setAmountOfCoinSell(0);
       return
     }
 
@@ -292,10 +292,10 @@ export default function trade() {
   }
 
   async function handleSell() {
-    console.log("State: ", sellAmount)
-    console.log("Ticker: ", sellTicker)
+    console.log("State: ", sellAmount);
+    console.log("Ticker: ", sellTicker);
 
-    let amountOfCoin = sellAmount / pricesMap[sellTicker]
+    let amountOfCoin = sellAmount / pricesMap[sellTicker];
 
     if (amountOfCoin > wallet[sellTicker]) {
       setErrorMsg("Insufficient balance to execute transaction");
@@ -314,29 +314,29 @@ export default function trade() {
         let data = sfDoc.data();
 
         // Make sure amountOfCoin in wallet >= amountOfCoin trying to sell
-        let dbWallet = data.wallet
+        let dbWallet = data.wallet;
 
         if (dbWallet[sellTicker.toLowerCase()] < amountOfCoin) {
           return Promise.reject("Insufficient Funds");
         }
 
         // Update balance
-        let profit = amountOfCoin * pricesMap[sellTicker]
-        let dbBal = data.balance
-        dbBal = dbBal + profit
-        setBalance(balance + profit) // locally
+        let profit = amountOfCoin * pricesMap[sellTicker];
+        let dbBal = data.balance;
+        dbBal = dbBal + profit;
+        setBalance(balance + profit); // locally
 
         // Update wallet
-        dbWallet[sellTicker.toLowerCase()] -= amountOfCoin
+        dbWallet[sellTicker.toLowerCase()] -= amountOfCoin;
 
         // Push updates
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success! Sold " + amountOfCoin + " " + sellTicker)
-      setSellTicker("")
+      setSuccessMsg("Success! Sold " + amountOfCoin + " " + sellTicker);
+      setSellTicker("");
     } catch (e) {
-      setErrorMsg("Error executing trade. Try again later.")
+      setErrorMsg("Error executing trade. Try again later.");
     }
   }
 
@@ -367,7 +367,7 @@ export default function trade() {
       return
     }
 
-    if (num <= 0 || num > 10000000) {
+    if (num < 0 || num > 10000000) {
       setErrorMsg("Amount must be between 0 and 10,000,000");
       setSendAmount(0);
       return
