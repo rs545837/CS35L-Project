@@ -157,8 +157,8 @@ export default function trade() {
     let num = NaN;
 
     try {
-      // Use parseInt with radix 10 to parse the string as a base-10 integer
-      num = parseInt(inputStr, 10);
+      // Use parseFloat with radix 10 to parse the string as a base-10 integer
+      num = parseFloat(inputStr, 10);
   
       if (isNaN(num)) {
         // issue
@@ -259,8 +259,8 @@ export default function trade() {
     let num = NaN;
 
     try {
-      // Use parseInt with radix 10 to parse the string as a base-10 integer
-      num = parseInt(inputStr, 10);
+      // Use parseFloat with radix 10 to parse the string as a base-10 integer
+      num = parseFloat(inputStr, 10);
   
       if (isNaN(num)) {
         // issue
@@ -351,8 +351,8 @@ export default function trade() {
     let num = NaN;
 
     try {
-      // Use parseInt with radix 10 to parse the string as a base-10 integer
-      num = parseInt(inputStr, 10);
+      // Use parseFloat with radix 10 to parse the string as a base-10 integer
+      num = parseFloat(inputStr, 10);
   
       if (isNaN(num)) {
         // issue
