@@ -2,8 +2,23 @@
 
 "use client";
 
-import { useAuth } from '@/app/Auth/AuthContext';
-import { Tabs, TabList, TabPanels, Tab, TabPanel, InputLeftElement, InputGroup, Input, Box } from '@chakra-ui/react'
+import { useAuth } from "@/app/Auth/AuthContext";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  InputLeftElement,
+  InputGroup,
+  Input,
+  Box,
+  Container,
+  Center,
+  Collapse,
+  Card,
+  Text,
+} from "@chakra-ui/react";
 
 import { getData } from "@/app/api";
 
@@ -15,18 +30,25 @@ import {
   StatArrow,
   StatGroup,
   useToast,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import { Select } from '@chakra-ui/react'
+import { Select } from "@chakra-ui/react";
 
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button, ButtonGroup } from "@chakra-ui/react";
 import { db } from "@/app/firebase";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { useEffect, useState } from 'react';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { runTransaction } from "firebase/firestore";
-import { useRouter } from 'next/navigation';
-import { BsCurrencyBitcoin } from 'react-icons/bs';
-import { LockIcon } from '@chakra-ui/icons';
+import { useRouter } from "next/navigation";
+import { BsCurrencyBitcoin } from "react-icons/bs";
+import { LockIcon } from "@chakra-ui/icons";
 
 export default function trade() {
   const { authUser } = useAuth();
@@ -37,30 +59,35 @@ export default function trade() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [loading, isLoading] = useState(false);
-  
+
   // User State
   const [balance, setBalance] = useState(0);
   const [wallet, setWallet] = useState();
-
+  const [ticker, setTicker] = useState("");
+  const [cryptoIndex, setCryptoIndex] = useState(0);
+  const [cryptoSelected, setCryptoSelected] = useState(false);
   // Prices
   const [pricesMap, setPricesMap] = useState(null);
   const [pricesArr, setPricesArr] = useState(null);
 
   // Buy State
   const [buyAmount, setBuyAmount] = useState(0);
-  const [buyTicker, setBuyTicker] = useState("");
+  // const [ticker, setTicker] = useState("");
   const [amountOfCoinBuy, setAmountOfCoinBuy] = useState(0);
 
   // Sell State
   const [sellAmount, setSellAmount] = useState(0);
-  const [sellTicker, setSellTicker] = useState("");
+  // const [ticker, setTicker] = useState("");
   const [amountOfCoinSell, setAmountOfCoinSell] = useState(0);
 
   // Send State
   const [sendAmount, setSendAmount] = useState(0);
-  const [sendTicker, setSendTicker] = useState("");
+  // const [ticker, setTicker] = useState("");
   const [recipient, setRecipient] = useState("");
   const [sendUpdate, setSendUpdate] = useState(false); // just used to update wallet after send
+
+  // Keep track of submission attempts
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   // Fetch general information, like crypto prices and user balance.
   useEffect(() => {
@@ -73,25 +100,30 @@ export default function trade() {
 
         coin_data.map((item) => {
           temp_prices_map[item?.symbol?.toString()] = item?.quotes?.USD?.price;
-          temp_prices_arr.push(item?.symbol?.toString() + " $" + item?.quotes?.USD?.price.toLocaleString('en-US', {
-            style: 'decimal',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }));
+          temp_prices_arr.push(
+            item?.symbol?.toString() +
+              " $" +
+              item?.quotes?.USD?.price.toLocaleString("en-US", {
+                style: "decimal",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+          );
         });
 
         setPricesMap(temp_prices_map);
         setPricesArr(temp_prices_arr);
+        console.table(pricesArr);
       } catch (error) {
         setErrorMsg("Error Loading Crypto Prices");
       }
     };
 
     const fetchUserFromDB = async () => {
-      isLoading(true)
+      isLoading(true);
       const docRef = doc(db, "users", authUser.uid);
       const docSnap = await getDoc(docRef);
-  
+
       if (docSnap.exists()) {
         let data = docSnap.data();
         setBalance(data.balance);
@@ -107,19 +139,19 @@ export default function trade() {
   }, [balance, sendUpdate]);
 
   useEffect(() => {
-    if (errorMsg) {
+    if (errorMsg && isButtonPressed) {
       toast({
         title: `${errorMsg}`,
         position: "bottom",
         isClosable: true,
         status: "error",
-        duration: 3500,
+        duration: 2500,
         colorScheme: "pink",
       });
-
+      setIsButtonPressed(false);
       setErrorMsg("");
     }
-  }, [errorMsg]);
+  }, [errorMsg, isButtonPressed, toast]);
 
   useEffect(() => {
     if (successMsg) {
@@ -138,19 +170,24 @@ export default function trade() {
 
   // Buy Logic
 
-  function handleSelectComponentForBuy(event) {
-    setBuyTicker(event.target.value);
+  function handleTicker(event) {
+    setCryptoIndex(event.target.selectedIndex - 1);
+    console.log(event.target.value);
+    event.target.value == ""
+      ? setCryptoSelected(false)
+      : setCryptoSelected(true);
+    setTicker(event.target.value);
   }
 
   // update amountOfCoinBuy
   useEffect(() => {
     const e = {
       target: {
-        value: String(buyAmount)
-      }
+        value: String(buyAmount),
+      },
     };
     handleInputForBuy(e);
-  }, [buyTicker]);
+  }, [ticker]);
 
   function handleInputForBuy(event) {
     let inputStr = event.target.value;
@@ -159,48 +196,50 @@ export default function trade() {
     try {
       // Use parseFloat with radix 10 to parse the string as a base-10 integer
       num = parseFloat(inputStr, 10);
-  
+
       if (isNaN(num)) {
         // issue
         setErrorMsg("Invalid Amount");
         setAmountOfCoinBuy(0);
-        return
+        return;
       }
     } catch (error) {
       // issue
       setErrorMsg("Invalid Amount");
       setAmountOfCoinBuy(0);
-      return
+      return;
     }
 
     if (num < 0 || num > 10000000) {
       setErrorMsg("Amount must be between 0 and 10,000,000");
       setAmountOfCoinBuy(0);
-      return
+      return;
     }
 
     setBuyAmount(num);
 
-    if (!buyTicker) {
+    if (!ticker) {
       setAmountOfCoinBuy(0);
-      return
+      return;
     }
 
-    setAmountOfCoinBuy((num / pricesMap[buyTicker]).toFixed(5));
+    setAmountOfCoinBuy(num / pricesMap[ticker]);
   }
 
   async function handleBuy() {
     console.log("State: ", buyAmount);
-    console.log("Ticker: ", buyTicker);
+    console.log("Ticker: ", ticker);
 
+    setIsButtonPressed(true);
     if (balance < buyAmount) {
       setErrorMsg("Insufficient funds to execute transaction");
-      return
+      return;
     }
 
-    let amountOfCoin = (buyAmount / pricesMap[buyTicker]).toFixed(5);
+    let amountOfCoin = buyAmount / pricesMap[ticker];
 
     const docRef = doc(db, "users", authUser.uid);
+    setIsButtonPressed(false);
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -217,42 +256,41 @@ export default function trade() {
         if (dbBal < buyAmount) {
           return Promise.reject("Insufficient Funds");
         }
-        
+
         // Update balance
         dbBal = dbBal - buyAmount;
         setBalance(balance - buyAmount); // locally
 
         // Update wallet
         let dbWallet = data.wallet;
-        dbWallet[buyTicker.toLowerCase()] += amountOfCoin;
+        dbWallet[ticker.toLowerCase()] += amountOfCoin;
         console.log(dbWallet);
 
         // Push updates
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success! Bought " + amountOfCoin + " " + buyTicker);
-      setBuyTicker("");
+      setSuccessMsg("Success! Bought " + amountOfCoin + " " + ticker);
+      setCryptoSelected(false);
+      setTicker("");
     } catch (e) {
+      setIsButtonPressed(true);
+
       setErrorMsg("Error executing trade. Try again later.");
     }
   }
 
   // Sell Logic...
 
-  function handleSelectComponentForSell(event) {
-    setSellTicker(event.target.value);
-  }
-
   // update amountOfCoinSell
   useEffect(() => {
     const e = {
       target: {
-        value: String(sellAmount)
-      }
+        value: String(sellAmount),
+      },
     };
     handleInputForSell(e);
-  }, [sellTicker]);
+  }, [ticker]);
 
   function handleInputForSell(event) {
     let inputStr = event.target.value;
@@ -261,48 +299,50 @@ export default function trade() {
     try {
       // Use parseFloat with radix 10 to parse the string as a base-10 integer
       num = parseFloat(inputStr, 10);
-  
+
       if (isNaN(num)) {
         // issue
         setErrorMsg("Invalid Amount");
         setAmountOfCoinSell(0);
-        return
+        return;
       }
     } catch (error) {
       // issue
       setErrorMsg("Invalid Amount");
       setAmountOfCoinSell(0);
-      return
+      return;
     }
 
     if (num < 0 || num > 10000000) {
       setErrorMsg("Amount must be between 0 and 10,000,000");
       setAmountOfCoinSell(0);
-      return
+      return;
     }
 
     setSellAmount(num);
 
-    if (!sellTicker) {
+    if (!ticker) {
       setAmountOfCoinSell(0);
-      return
+      return;
     }
 
-    setAmountOfCoinSell((num / pricesMap[sellTicker]).toFixed(5))
+    setAmountOfCoinSell(num / pricesMap[ticker]);
   }
 
   async function handleSell() {
     console.log("State: ", sellAmount);
-    console.log("Ticker: ", sellTicker);
+    console.log("Ticker: ", ticker);
+    setIsButtonPressed(true);
 
-    let amountOfCoin = sellAmount / pricesMap[sellTicker];
+    let amountOfCoin = sellAmount / pricesMap[ticker];
 
-    if (amountOfCoin > wallet[sellTicker]) {
+    if (amountOfCoin > wallet[ticker]) {
       setErrorMsg("Insufficient balance to execute transaction");
-      return
+      return;
     }
 
     const docRef = doc(db, "users", authUser.uid);
+    setIsButtonPressed(false);
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -316,35 +356,34 @@ export default function trade() {
         // Make sure amountOfCoin in wallet >= amountOfCoin trying to sell
         let dbWallet = data.wallet;
 
-        if (dbWallet[sellTicker.toLowerCase()] < amountOfCoin) {
+        if (dbWallet[ticker.toLowerCase()] < amountOfCoin) {
           return Promise.reject("Insufficient Funds");
         }
 
         // Update balance
-        let profit = amountOfCoin * pricesMap[sellTicker];
+        let profit = amountOfCoin * pricesMap[ticker];
         let dbBal = data.balance;
         dbBal = dbBal + profit;
         setBalance(balance + profit); // locally
 
         // Update wallet
-        dbWallet[sellTicker.toLowerCase()] -= amountOfCoin;
+        dbWallet[ticker.toLowerCase()] -= amountOfCoin;
 
         // Push updates
         transaction.update(docRef, { balance: dbBal, wallet: dbWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success! Sold " + amountOfCoin + " " + sellTicker);
-      setSellTicker("");
+      setSuccessMsg("Success! Sold " + amountOfCoin + " " + ticker);
+      setCryptoSelected(false);
+      setTicker("");
     } catch (e) {
+      setIsButtonPressed(true);
+
       setErrorMsg("Error executing trade. Try again later.");
     }
   }
 
   // Send Logic
-
-  function handleSelectComponentForSend(event) {
-    setSendTicker(event.target.value);
-  }
 
   function handleInputForSend(event) {
     let inputStr = event.target.value;
@@ -353,24 +392,24 @@ export default function trade() {
     try {
       // Use parseFloat with radix 10 to parse the string as a base-10 integer
       num = parseFloat(inputStr, 10);
-  
+
       if (isNaN(num)) {
         // issue
         setErrorMsg("Invalid Amount");
         setSendAmount(0);
-        return
+        return;
       }
     } catch (error) {
       // issue
       setErrorMsg("Invalid Amount");
       setSendAmount(0);
-      return
+      return;
     }
 
     if (num < 0 || num > 10000000) {
       setErrorMsg("Amount must be between 0 and 10,000,000");
       setSendAmount(0);
-      return
+      return;
     }
 
     setSendAmount(num);
@@ -378,23 +417,28 @@ export default function trade() {
 
   async function handleSend() {
     console.log("State: ", sendAmount);
-    console.log("Ticker: ", sendTicker);
+    console.log("Ticker: ", ticker);
+    setIsButtonPressed(true);
 
     if (sendAmount <= 0) {
       setErrorMsg("Insufficient amount");
     }
 
-    if (sendAmount > wallet[sellTicker]) {
+    if (sendAmount > wallet[ticker]) {
       setErrorMsg("Insufficient balance to execute transaction");
-      return
+      return;
     }
-    
+
     if (!recipient) {
       setErrorMsg("Enter Receipient Address");
     }
+    setIsButtonPressed(false);
 
     // Check if receipient address is correct
-    const q = query(collection(db, 'users'), where('wallet_address', '==', recipient));
+    const q = query(
+      collection(db, "users"),
+      where("wallet_address", "==", recipient)
+    );
     let receipientDocId = null;
 
     await getDocs(q)
@@ -404,20 +448,24 @@ export default function trade() {
         });
       })
       .catch((error) => {
-        console.error('Error querying Firestore:', error);
+        console.error("Error querying Firestore:", error);
+        setIsButtonPressed(true);
         setErrorMsg("Error Finding Receipient");
-        return
+        return;
       });
-    
+
+    setIsButtonPressed(true);
+
     if (!receipientDocId) {
       setErrorMsg("Error Finding Receipient");
-      return
+      return;
     }
 
     if (receipientDocId == authUser.id) {
-      setErrorMsg("Can't send to yourself!")
-      return
+      setErrorMsg("Can't send to yourself!");
+      return;
     }
+    setIsButtonPressed(false);
 
     const docRefSender = doc(db, "users", authUser.uid);
     const docRefReceipient = doc(db, "users", receipientDocId);
@@ -441,13 +489,13 @@ export default function trade() {
         let receipientWallet = receipientData.wallet;
         let senderWallet = senderData.wallet;
 
-        if (senderWallet[sendTicker.toLowerCase()] < sendAmount) {
+        if (senderWallet[ticker.toLowerCase()] < sendAmount) {
           return Promise.reject("Insufficient Funds");
         }
 
         // Now, execute trade
-        receipientWallet[sendTicker.toLowerCase()] += sendAmount;
-        senderWallet[sendTicker.toLowerCase()] -= sendAmount;
+        receipientWallet[ticker.toLowerCase()] += sendAmount;
+        senderWallet[ticker.toLowerCase()] -= sendAmount;
 
         console.log("Rec wallet: ", receipientWallet);
         console.log("sender wallet: ", senderWallet);
@@ -457,122 +505,165 @@ export default function trade() {
         transaction.update(docRefSender, { wallet: senderWallet });
       });
       console.log("Transaction successfully committed!");
-      setSuccessMsg("Success! Sent " + sendAmount + " " + sendTicker);
-      setSendTicker("");
+      setSuccessMsg("Success! Sent " + sendAmount + " " + ticker);
+      setCryptoSelected(false);
+      setTicker("");
       setSendUpdate(!sendUpdate);
     } catch (e) {
+      setIsButtonPressed(false);
       setErrorMsg("Error executing trade. Try again later.");
       console.log(e);
     }
   }
 
   return (
-    <>
-      <Stat>
-        <StatLabel>Cash Balance</StatLabel>
-        <StatNumber>${balance.toLocaleString('en-US', {
-            style: 'decimal',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </StatNumber>
-      </Stat>
+    <Box>
+      <Container centerContent>
+        <Stat>
+          <Center>
+            <StatLabel>Balance</StatLabel>
+          </Center>
+          <StatNumber>
+            $
+            {balance.toLocaleString("en-US", {
+              style: "decimal",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </StatNumber>
+        </Stat>
+        <Select
+          placeholder="Select crypto"
+          value={ticker}
+          onChange={handleTicker}
+          variant="flushed"
+          _placeholder={{ opacity: 0.8, color: "gray.500" }}
+          focusBorderColor="pink.400"
+        >
+          {!loading &&
+            pricesArr &&
+            pricesArr.map((option) => (
+              <option key={option}>{option.split("$")[0]}</option>
+            ))}
+        </Select>
+        <Collapse in={cryptoSelected}>
+          <Text>
+            Current price:{" "}
+            {pricesArr &&
+              cryptoIndex >= 0 &&
+              pricesArr[cryptoIndex].split(" ")[1]}
+          </Text>
+          <Text>
+            In wallet: {ticker && wallet[ticker.toLowerCase()].toFixed(7)}{" "}
+            {ticker}
+          </Text>
+          <Text>
+            Total Value:{" $"}
+            {console.table(wallet)}
+            {ticker &&
+              (
+                wallet[ticker.toLowerCase()] *
+                parseFloat(
+                  pricesArr[cryptoIndex]
+                    .split(" ")[1]
+                    .split("$")[1]
+                    .replace(",", "")
+                )
+              ).toLocaleString("en-US", {
+                style: "decimal",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+          </Text>
+        </Collapse>
+      </Container>
 
-      <Tabs isFitted variant='enclosed'>
-        <TabList mb='1em'>
+      <Tabs isFitted variant="enclosed">
+        <TabList mb="1em">
           <Tab>Buy</Tab>
           <Tab>Sell</Tab>
           <Tab>Send</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
-            {/* BUY PANEL */}  
+            {/* BUY PANEL */}
             <InputGroup>
               <InputLeftElement
-                pointerEvents='none'
-                color='black.300'
-                fontSize='1.2em'
-                children='$'
+                pointerEvents="none"
+                color="black.300"
+                fontSize="1.2em"
+                children="$"
               />
-              <Input onChange={handleInputForBuy} type="number" placeholder='Enter amount' />
+              <Input
+                onChange={handleInputForBuy}
+                type="number"
+                placeholder="Enter amount"
+              />
             </InputGroup>
 
-            <Box m={2} />
-
-            <Select placeholder='Select crypto' value={buyTicker} onChange={handleSelectComponentForBuy}>
-              {pricesArr && pricesArr.map((option) => (
-                <option key={option} value={option.split(' ')[0]}>
-                  {option}
-                </option>
-              ))}
-            </Select>
-
-            <Box m={2} />
-
-            <Button colorScheme='blue' onClick={handleBuy}>Buy {amountOfCoinBuy > 0 && amountOfCoinBuy} {buyTicker}</Button>
+            <Button colorScheme="blue" onClick={handleBuy}>
+              Buy {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
+            </Button>
           </TabPanel>
           <TabPanel>
             {/* SELL PANEL */}
             <InputGroup>
               <InputLeftElement
-                pointerEvents='none'
-                color='black.300'
-                fontSize='1.2em'
-                children='$'
+                pointerEvents="none"
+                color="black.300"
+                fontSize="1.2em"
+                children="$"
               />
-              <Input onChange={handleInputForSell} type="number" placeholder='Enter amount' />
+              <Input
+                onChange={handleInputForSell}
+                type="number"
+                placeholder="Enter amount"
+              />
             </InputGroup>
 
             <Box m={2} />
 
-            <Select placeholder='Select crypto' value={sellTicker} onChange={handleSelectComponentForSell}>
-              {!loading && pricesArr && pricesArr.map((option) => (
-                <option key={option} value={option.split(' ')[0]}>
-                  {option}      - Amount: {wallet[option.split(' ')[0].toLowerCase()]}
-                </option>
-              ))}
-            </Select>
-
-            <Box m={2} />
-
-            <Button colorScheme='blue' onClick={handleSell}>Sell {amountOfCoinSell > 0 && amountOfCoinSell} {sellTicker}</Button>
+            <Button colorScheme="blue" onClick={handleSell}>
+              Sell {amountOfCoinSell > 0 && amountOfCoinSell.toFixed(5)}{" "}
+              {ticker}
+            </Button>
           </TabPanel>
           <TabPanel>
             {/* SEND PANEL */}
 
             <InputGroup mt={4}>
               <InputLeftElement pointerEvents="none" children={<LockIcon />} />
-              <Input onChange={(e) => {setRecipient(e.target.value)}} type="text" placeholder="Recipient Address" />
+              <Input
+                onChange={(e) => {
+                  setRecipient(e.target.value);
+                }}
+                type="text"
+                placeholder="Recipient Address"
+              />
             </InputGroup>
 
             <Box m={2} />
 
             <InputGroup>
               <InputLeftElement
-                pointerEvents='none'
-                color='black.300'
-                fontSize='1.2em'
+                pointerEvents="none"
+                color="black.300"
+                fontSize="1.2em"
                 children={<BsCurrencyBitcoin />}
               />
-              <Input onChange={handleInputForSend} type="number" placeholder='Enter amount' />
+              <Input
+                onChange={handleInputForSend}
+                type="number"
+                placeholder="Enter amount"
+              />
             </InputGroup>
 
-            <Box m={2} />
-
-            <Select placeholder='Select crypto' value={sendTicker} onChange={handleSelectComponentForSend}>
-              {!loading && pricesArr && pricesArr.map((option) => (
-                <option key={option} value={option.split(' ')[0]}>
-                  {option}      - Amount: {wallet[option.split(' ')[0].toLowerCase()]}
-                </option>
-              ))}
-            </Select>
-
-            <Box m={2} />
-
-            <Button colorScheme='blue' onClick={handleSend}>Send {sendTicker}</Button>
+            <Button colorScheme="blue" onClick={handleSend}>
+              Send {ticker}
+            </Button>
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </>
+    </Box>
   );
 }
