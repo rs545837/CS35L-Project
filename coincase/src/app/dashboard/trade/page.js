@@ -18,6 +18,9 @@ import {
   Collapse,
   Card,
   Text,
+  TabIndicator,
+  Spacer,
+  VStack,
 } from "@chakra-ui/react";
 
 import { getData } from "@/app/api";
@@ -33,6 +36,8 @@ import {
 } from "@chakra-ui/react";
 
 import { Select } from "@chakra-ui/react";
+
+import { motion } from "framer-motion";
 
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { db } from "@/app/firebase";
@@ -578,89 +583,165 @@ export default function trade() {
         </Collapse>
       </Container>
 
-      <Tabs isFitted variant="enclosed">
+      <Tabs isFitted variant="unstyled">
         <TabList mb="1em">
           <Tab>Buy</Tab>
           <Tab>Sell</Tab>
           <Tab>Send</Tab>
         </TabList>
+        <TabIndicator
+          mt="-1.5px"
+          height="2px"
+          bg="#FF0080"
+          borderRadius="1px"
+        />
         <TabPanels>
+          {/* BUY PANEL */}
           <TabPanel>
-            {/* BUY PANEL */}
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="black.300"
-                fontSize="1.2em"
-                children="$"
-              />
-              <Input
-                onChange={handleInputForBuy}
-                type="number"
-                placeholder="Enter amount"
-              />
-            </InputGroup>
+            <VStack>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  fontSize="1.2em"
+                  children="$"
+                  color="#FF0080"
+                />
+                <Input
+                  onChange={handleInputForBuy}
+                  type="number"
+                  placeholder="Enter amount"
+                  variant="flushed"
+                  _placeholder={{ opacity: 0.8, color: "gray.500" }}
+                  focusBorderColor="pink.400"
+                />
+              </InputGroup>
 
-            <Button colorScheme="blue" onClick={handleBuy}>
-              Buy {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
-            </Button>
+              <Button
+                as={motion.button}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"#FF0080"}
+                href={"#"}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#e00071",
+                }}
+                whileTap={{
+                  scale: 0.9,
+                }}
+                transition={{
+                  duration: 0.3,
+                }}
+                onClick={handleBuy}
+              >
+                Buy
+                {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
+              </Button>
+            </VStack>
           </TabPanel>
           <TabPanel>
             {/* SELL PANEL */}
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="black.300"
-                fontSize="1.2em"
-                children="$"
-              />
-              <Input
-                onChange={handleInputForSell}
-                type="number"
-                placeholder="Enter amount"
-              />
-            </InputGroup>
+            <VStack>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  fontSize="1.2em"
+                  children="$"
+                  color="#FF0080"
+                />
+                <Input
+                  onChange={handleInputForSell}
+                  type="number"
+                  placeholder="Enter amount"
+                  variant="flushed"
+                  _placeholder={{ opacity: 0.8, color: "gray.500" }}
+                  focusBorderColor="pink.400"
+                />
+              </InputGroup>
 
-            <Box m={2} />
-
-            <Button colorScheme="blue" onClick={handleSell}>
-              Sell {amountOfCoinSell > 0 && amountOfCoinSell.toFixed(5)}{" "}
-              {ticker}
-            </Button>
+              <Button
+                as={motion.button}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"#FF0080"}
+                href={"#"}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#e00071",
+                }}
+                whileTap={{
+                  scale: 0.9,
+                }}
+                transition={{
+                  duration: 0.3,
+                }}
+                onClick={handleSell}
+              >
+                Sell {amountOfCoinSell > 0 && amountOfCoinSell.toFixed(5)}{" "}
+                {ticker}
+              </Button>
+            </VStack>
           </TabPanel>
           <TabPanel>
             {/* SEND PANEL */}
+            <VStack>
+              <InputGroup mt={4}>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<LockIcon color="#FF0080" />}
+                />
+                <Input
+                  onChange={(e) => {
+                    setRecipient(e.target.value);
+                  }}
+                  variant="flushed"
+                  _placeholder={{ opacity: 0.8, color: "gray.500" }}
+                  focusBorderColor="pink.400"
+                  type="text"
+                  placeholder="Recipient Address"
+                />
+              </InputGroup>
 
-            <InputGroup mt={4}>
-              <InputLeftElement pointerEvents="none" children={<LockIcon />} />
-              <Input
-                onChange={(e) => {
-                  setRecipient(e.target.value);
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="black.300"
+                  fontSize="1.2em"
+                  children={<BsCurrencyBitcoin color="#FF0080" />}
+                />
+                <Input
+                  onChange={handleInputForSend}
+                  type="number"
+                  placeholder="Enter amount"
+                  variant="flushed"
+                  _placeholder={{ opacity: 0.8, color: "gray.500" }}
+                  focusBorderColor="pink.400"
+                />
+              </InputGroup>
+              <Button
+                as={motion.button}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"#FF0080"}
+                href={"#"}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#e00071",
                 }}
-                type="text"
-                placeholder="Recipient Address"
-              />
-            </InputGroup>
-
-            <Box m={2} />
-
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="black.300"
-                fontSize="1.2em"
-                children={<BsCurrencyBitcoin />}
-              />
-              <Input
-                onChange={handleInputForSend}
-                type="number"
-                placeholder="Enter amount"
-              />
-            </InputGroup>
-
-            <Button colorScheme="blue" onClick={handleSend}>
-              Send {ticker}
-            </Button>
+                whileTap={{
+                  scale: 0.9,
+                }}
+                transition={{
+                  duration: 0.3,
+                }}
+                onClick={handleSend}
+              >
+                Send {ticker}
+              </Button>
+            </VStack>
           </TabPanel>
         </TabPanels>
       </Tabs>

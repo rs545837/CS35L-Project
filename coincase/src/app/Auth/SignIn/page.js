@@ -172,9 +172,9 @@ function SignIn() {
                   variant="flushed"
                   placeholder="Email"
                   name="email"
-                  onChange={handleInput}
                   _placeholder={{ opacity: 0.8, color: "gray.500" }}
                   focusBorderColor="pink.400"
+                  onChange={handleInput}
                 />
               </InputGroup>
               <InputGroup>
