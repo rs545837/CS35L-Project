@@ -21,6 +21,7 @@ import {
   TabIndicator,
   Spacer,
   VStack,
+  Heading,
 } from "@chakra-ui/react";
 
 import { getData } from "@/app/api";
@@ -54,6 +55,8 @@ import { runTransaction } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { BsCurrencyBitcoin } from "react-icons/bs";
 import { LockIcon } from "@chakra-ui/icons";
+
+import TransactionHistoryComponent from "@/app/components/Transactions";
 
 export default function trade() {
   const { authUser } = useAuth();
@@ -197,6 +200,7 @@ export default function trade() {
 
   function handleInputForBuy(event) {
     const inputStr = event.target.value;
+    console.log(inputStr);
     let num = NaN;
 
     try {
@@ -205,12 +209,14 @@ export default function trade() {
 
       if (isNaN(num)) {
         // issue
+        setBuyAmount(0);
         setErrorMsg("Invalid Amount");
         setAmountOfCoinBuy(0);
         return;
       }
     } catch (error) {
       // issue
+      setBuyAmount(0);
       setErrorMsg("Invalid Amount");
       setAmountOfCoinBuy(0);
       return;
@@ -334,12 +340,14 @@ export default function trade() {
 
       if (isNaN(num)) {
         // issue
+        setSellAmount(0);
         setErrorMsg("Invalid Amount");
         setAmountOfCoinSell(0);
         return;
       }
     } catch (error) {
       // issue
+      setSellAmount(0);
       setErrorMsg("Invalid Amount");
       setAmountOfCoinSell(0);
       return;
@@ -635,17 +643,17 @@ export default function trade() {
             ))}
         </Select>
         <Collapse in={cryptoSelected}>
-          <Text>
+          <Text color="#b742ff">
             Current price:{" "}
             {pricesArr &&
               cryptoIndex >= 0 &&
               pricesArr[cryptoIndex].split(" ")[1]}
           </Text>
-          <Text>
+          <Text color="#b742ff">
             In wallet: {ticker && wallet[ticker.toLowerCase()].toFixed(7)}{" "}
             {ticker}
           </Text>
-          <Text>
+          <Text color="#b742ff">
             Total Value:{" $"}
             {console.table(wallet)}
             {ticker &&
@@ -718,8 +726,7 @@ export default function trade() {
                 }}
                 onClick={handleBuy}
               >
-                Buy
-                {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
+                Buy {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
               </Button>
             </VStack>
           </TabPanel>
@@ -828,6 +835,17 @@ export default function trade() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <Center>
+        <Heading
+          bgGradient="radial(#FF0080, #b742ff)"
+          bgClip="text"
+          fontWeight="bold"
+          textAlign="center"
+        >
+          Transaction History
+        </Heading>
+      </Center>
+      <TransactionHistoryComponent />
     </Box>
   );
 }
