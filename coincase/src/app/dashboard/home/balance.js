@@ -45,12 +45,13 @@ export default function Balance({ user, data }) {
   //const gain = (balance - user.balance) / user.balance;
 
   //const updatedUser = { ...user, balance: gain };
-  let gain = ((pageState.balance - 1000) / 1000) * 100; // compare to the money that the user initially had
+  let gain = (((pageState.balance - 1000) / 1000) * 100).toFixed(2); // compare to the money that the user initially had
   if (gain == -1) gain = 0;
+  let balance = pageState.balance.toFixed(2);
   return (
     <div>
-      Hi {pageState.firstName}! your current balance is ${pageState.balance},
-      having {gain}% {gain >= 0 ? "increase" : "decrease"}.
+      Hi {pageState.firstName}! You currently have ${balance} cash, and have
+      total gain of {gain}% {gain >= 0 ? "increase" : "decrease"}.
     </div>
   );
 }
