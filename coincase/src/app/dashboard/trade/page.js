@@ -643,17 +643,17 @@ export default function trade() {
             ))}
         </Select>
         <Collapse in={cryptoSelected}>
-          <Text>
+          <Text color="#b742ff">
             Current price:{" "}
             {pricesArr &&
               cryptoIndex >= 0 &&
               pricesArr[cryptoIndex].split(" ")[1]}
           </Text>
-          <Text>
+          <Text color="#b742ff">
             In wallet: {ticker && wallet[ticker.toLowerCase()].toFixed(7)}{" "}
             {ticker}
           </Text>
-          <Text>
+          <Text color="#b742ff">
             Total Value:{" $"}
             {console.table(wallet)}
             {ticker &&
@@ -726,8 +726,7 @@ export default function trade() {
                 }}
                 onClick={handleBuy}
               >
-                Buy
-                {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
+                Buy {amountOfCoinBuy > 0 && amountOfCoinBuy.toFixed(5)} {ticker}
               </Button>
             </VStack>
           </TabPanel>
