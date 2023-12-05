@@ -1,6 +1,17 @@
 "use client";
 
-import { Card, SimpleGrid, Text, Box, Heading,Container } from "@chakra-ui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  SimpleGrid,
+  Text,
+  Box,
+  Heading,
+  Container,
+  Stack,
+  StackDivider,
+} from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
@@ -46,17 +57,15 @@ const TransactionHistoryComponent = () => {
   }, []);
 
   const formatTimestamp = (timestamp) => {
-    const formattedDate = new Date(timestamp).toLocaleString("en-US", {
-      weekday: "long",
+    const formattedDate = new Date(timestamp).toLocaleDateString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "numeric",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
       timeZoneName: "short",
     });
-
     return formattedDate;
   };
 
@@ -67,48 +76,90 @@ const TransactionHistoryComponent = () => {
       ) : (
         <SimpleGrid
           spacing={4}
-          templateColumns="repeat(auto-fill, minmax(300px, 2fr))"
+          templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
         >
           {transactionHistory.map((transaction, index) => (
-            <Box
+            <Container
               centerContent
               bgGradient="linear(to-r, #FFFFFF, #FF0080,#b742ff,#FFFFFF)"
             >
-              <Card key={index} boxShadow="lg">
-                <Heading
-                  fontSize="large"
-                  bgGradient="linear(to-r, #FF0080, #b742ff)"
-                  bgClip="text"
-                  textAlign="center"
-                >
-                  {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
-                </Heading>
-                {(transaction.type === "buy" ||
-                  transaction.type === "sell") && (
-                  <Text
-                    bgGradient="linear(to-r, #FF0080, #b742ff)"
+              <Card
+                key={index}
+                w="100%"
+                h="100%"
+                variant="elevated"
+                padding={5}
+                margin={1}
+              >
+                <CardHeader>
+                  <Heading
+                    bgGradient="linear(to-r,#FF0080, #b742ff,#FF0080)"
                     bgClip="text"
+                    size="lg"
+                    textAlign="center"
                   >
-                    USD: {transaction.cashAmount}
-                  </Text>
-                )}
+                    {transaction.type.charAt(0).toUpperCase() +
+                      transaction.type.slice(1)}
+                  </Heading>
+                </CardHeader>
+                <CardBody>
+                  <Stack divider={<StackDivider />} spacing="4">
+                    <Box>
+                      <Heading
+                        bgGradient="linear(to-r,#FF0080, #b742ff,#FF0080)"
+                        bgClip="text"
+                        size="md"
+                      >
+                        {transaction.type === "buy" ||
+                        transaction.type === "sell"
+                          ? "USD"
+                          : transaction.type === "receive"
+                          ? "Sent From"
+                          : "Sent To"}
+                      </Heading>
 
-                <Text bgGradient="linear(to-r, #FF0080, #b742ff)" bgClip="text">
-                  Coin:{" "}
-                  {Number.isInteger(transaction.coinAmount)
-                    ? transaction.coinAmount.toFixed(1)
-                    : transaction.coinAmount.toFixed(5)}{" "}
-                  {transaction.coin}
-                </Text>
-                <Text
-                  bgGradient="linear(to-r, #FF0080, #b742ff)"
-                  bgClip="text"
-                  textAlign="center"
-                >
-                  Timestamp: {formatTimestamp(transaction.timestamp)}
-                </Text>
+                      {transaction.type === "buy" ||
+                      transaction.type === "sell" ? (
+                        <Text color="#FF0080">{transaction.cashAmount}$</Text>
+                      ) : (
+                        <Text color="#FF0080">
+                          {transaction.sender
+                            ? transaction.sender
+                            : transaction.recipient}
+                        </Text>
+                      )}
+                    </Box>
+                    <Box>
+                      <Heading
+                        bgGradient="linear(to-r,#FF0080, #b742ff,#FF0080)"
+                        bgClip="text"
+                        size="md"
+                      >
+                        Coin
+                      </Heading>
+                      <Text color="#FF0080">
+                        {Number.isInteger(transaction.coinAmount)
+                          ? transaction.coinAmount.toFixed(1)
+                          : transaction.coinAmount.toFixed(5)}{" "}
+                        {transaction.coin}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Heading
+                        bgGradient="linear(to-r,#FF0080, #b742ff,#FF0080)"
+                        bgClip="text"
+                        size="md"
+                      >
+                        Time
+                      </Heading>
+                      <Text color="#FF0080">
+                        {formatTimestamp(transaction.timestamp)}
+                      </Text>
+                    </Box>
+                  </Stack>
+                </CardBody>
               </Card>
-            </Box>
+            </Container>
           ))}
         </SimpleGrid>
       )}

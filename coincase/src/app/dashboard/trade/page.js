@@ -21,6 +21,7 @@ import {
   TabIndicator,
   Spacer,
   VStack,
+  Heading,
 } from "@chakra-ui/react";
 
 import { getData } from "@/app/api";
@@ -835,6 +836,16 @@ export default function trade() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <Center>
+        <Heading
+          bgGradient="radial(#FF0080, #b742ff)"
+          bgClip="text"
+          fontWeight="bold"
+          textAlign="center"
+        >
+          Transaction History
+        </Heading>
+      </Center>
       <TransactionHistoryComponent />
     </Box>
   );
