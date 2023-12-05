@@ -128,9 +128,9 @@ function SignIn() {
         <Text
           bgGradient="radial(#FF0080, #b742ff)"
           bgClip="text"
+          textAlign="center"
           fontSize="5xl"
           fontWeight="bold"
-          textAlign="center"
         >
           <Link href="/">Coincase</Link>
         </Text>

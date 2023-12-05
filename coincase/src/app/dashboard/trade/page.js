@@ -55,6 +55,8 @@ import { useRouter } from "next/navigation";
 import { BsCurrencyBitcoin } from "react-icons/bs";
 import { LockIcon } from "@chakra-ui/icons";
 
+import TransactionHistoryComponent from "@/app/components/Transactions";
+
 export default function trade() {
   const { authUser } = useAuth();
   const toast = useToast();
@@ -197,6 +199,7 @@ export default function trade() {
 
   function handleInputForBuy(event) {
     const inputStr = event.target.value;
+    console.log(inputStr);
     let num = NaN;
 
     try {
@@ -205,12 +208,14 @@ export default function trade() {
 
       if (isNaN(num)) {
         // issue
+        setBuyAmount(0);
         setErrorMsg("Invalid Amount");
         setAmountOfCoinBuy(0);
         return;
       }
     } catch (error) {
       // issue
+      setBuyAmount(0);
       setErrorMsg("Invalid Amount");
       setAmountOfCoinBuy(0);
       return;
@@ -334,12 +339,14 @@ export default function trade() {
 
       if (isNaN(num)) {
         // issue
+        setSellAmount(0);
         setErrorMsg("Invalid Amount");
         setAmountOfCoinSell(0);
         return;
       }
     } catch (error) {
       // issue
+      setSellAmount(0);
       setErrorMsg("Invalid Amount");
       setAmountOfCoinSell(0);
       return;
@@ -828,6 +835,7 @@ export default function trade() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <TransactionHistoryComponent />
     </Box>
   );
 }
