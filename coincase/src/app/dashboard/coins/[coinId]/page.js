@@ -31,7 +31,7 @@ export function CoinPrice({ params, type, rank }) {
   if (!tickersLoading) {
     tickersData = data;
   }
-  console.log(params);
+
   let value;
 
   switch (type) {
