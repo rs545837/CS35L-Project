@@ -18,15 +18,10 @@ git clone https://github.com/chewableanimal/CS35L-Project.git
 
 ### Install Dependencies:
 ```
+cd coincase
 npm install
 ```
 ### Configuration:
-
-Change directory to the root of the project
-
-```
-cd coincase
-```
 
 Add a file name .env.local to the root folder using code editor or thorugh terminal with:
 
