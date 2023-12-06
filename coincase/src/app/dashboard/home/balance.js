@@ -2,6 +2,7 @@ import { useAuth } from "@/app/Auth/AuthContext";
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import Wallet from "../wallet/page";
 
 export default function Balance({ user, data }) {
   const { authUser } = useAuth();
@@ -45,13 +46,20 @@ export default function Balance({ user, data }) {
   //const gain = (balance - user.balance) / user.balance;
 
   //const updatedUser = { ...user, balance: gain };
-  let gain = (((pageState.balance - 1000) / 1000) * 100).toFixed(2); // compare to the money that the user initially had
-  if (gain == -1) gain = 0;
-  let balance = pageState.balance.toFixed(2);
+
+  let balance = pageState.balance;
+  console.log(balance, 1);
+  let coinBalance = Wallet({ type: "price" });
+  console.log(coinBalance, 2);
+  let totalBalance = parseInt(balance, 10) + parseInt(coinBalance, 10);
+  console.log(totalBalance, 3);
+  let gain = (((totalBalance - 1000) / 1000) * 100).toFixed(2); // compare to the money that the user initially had
+
   return (
-    <div>
-      Hi {pageState.firstName}! You currently have ${balance} cash, and have
-      total gain of {gain}% {gain >= 0 ? "increase" : "decrease"}.
+    <div style={{ fontSize: "20px" }}>
+      Hi {pageState.firstName}! Your total balance is ${totalBalance.toFixed(2)}
+      , having total gain of {gain}% {gain >= 0 ? "increase" : "decrease"}.
+      Also, you have ${balance.toFixed(2)} in your wallet. Spend wisely!
     </div>
   );
 }

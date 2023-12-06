@@ -31,7 +31,7 @@ const CoinImg = styled.img`
   transition: 300ms all;
 `;
 
-const Wallet = () => {
+const Wallet = ({ type }) => {
   const [wallet, setWallet] = useState({});
   const [uid, setUID] = useState("");
   const [prices, setPrices] = useState({});
@@ -112,8 +112,10 @@ const Wallet = () => {
       getValue();
     }
   }, [prices, wallet]);
-
-  return (
+  console.log(value);
+  return type == "price" ? (
+    value
+  ) : (
     <Box
       display="flex"
       flexDirection="column"
