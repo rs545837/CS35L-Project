@@ -27,6 +27,7 @@ export const UserSettings = () => {
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMatch, setIsMatch] = useState(true);
@@ -34,8 +35,6 @@ export const UserSettings = () => {
   const [passwordChanged, setPasswordChanged] = useState(0);
 
   const [user, setUser] = useState(null);
-
-  const { authUser } = useAuth();
 
   const buttonStyles = {
     ...(isButtonEnabled
@@ -90,6 +89,7 @@ export const UserSettings = () => {
         setFirstName(data.first_name);
         setLastName(data.last_name);
         setEmail(user.email);
+        setWalletAddress(data.wallet_address);
       } else {
         console.log(user.uid + ": No such document!");
       }
@@ -175,6 +175,16 @@ export const UserSettings = () => {
               label="Email"
               value={email}
               type="email"
+              width="20.5em"
+              cursor="not-allowed"
+            />
+            <Field
+              backgroundColor="#D3D3D3"
+              textColor="black"
+              name="wallet_address"
+              label="Wallet Address"
+              value={walletAddress}
+              type="password"
               width="20.5em"
               cursor="not-allowed"
             />
