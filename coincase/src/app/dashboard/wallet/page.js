@@ -122,8 +122,9 @@ const Wallet = ({ type }) => {
       justifyContent="center"
       alignItems="center"
     >
-      <Text color="#ff0080" fontSize="6xl" fontWeight="bold" mb={4}>
-        WALLET
+      <Text bgGradient="radial(circle at 30%, #FF0080, #b742ff)"
+          bgClip="text" fontSize="6xl" fontWeight="bold" mb={4}>
+        Wallet
       </Text>
       <VStack align="center">
         {Object.keys(wallet).map((coinID, index) => {
