@@ -70,6 +70,7 @@ function ResetPassword() {
     email: "",
   });
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const toast = useToast();
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
@@ -83,10 +84,25 @@ function ResetPassword() {
         duration: 2500,
         colorScheme: "pink",
       });
-
+      setIsButtonPressed(false);
       setErrorMsg("");
     }
-  }, [isButtonPressed, toast]);
+  }, [errorMsg, isButtonPressed, toast]);
+
+  useEffect(() => {
+    if (successMsg) {
+      toast({
+        title: `${successMsg}`,
+        position: "bottom",
+        isClosable: true,
+        status: "success",
+        duration: 3500,
+        colorScheme: "green",
+      });
+
+      setSuccessMsg("");
+    }
+  }, [successMsg]);
 
   useEffect(() => {
     if (authUser && !isLoading) {
@@ -100,8 +116,17 @@ function ResetPassword() {
   };
 
   const triggerResetEmail = async () => {
-    await sendPasswordResetEmail(auth, formData.email);
-    console.log("Password reset email sent");
+    setIsButtonPressed(true);
+    try {
+      await sendPasswordResetEmail(auth, formData.email);
+      setSuccessMsg("Password reset email sent");
+      console.log("Password reset email sent");
+      // alert("Check your email for further instructions");
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Invalid email address");
+      // alert("Invalid email address");
+    }
   };
 
   return (
