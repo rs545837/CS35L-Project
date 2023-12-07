@@ -24,8 +24,10 @@ export default function Home() {
           <Box h="100%" w="100%" padding="1em">
             <Tabs isFitted size="md" variant="enclosed">
               <TabList>
-                <Tab _selected={{ color: "grey", bg: "primary.500" }}>User</Tab>
                 <Tab _selected={{ color: "grey", bg: "primary.500" }}>
+                  User Settings
+                </Tab>
+                {/* <Tab _selected={{ color: "grey", bg: "primary.500" }}>
                   Integrations
                 </Tab>
                 <Tab _selected={{ color: "grey", bg: "primary.500" }}>
@@ -33,13 +35,13 @@ export default function Home() {
                 </Tab>
                 <Tab _selected={{ color: "grey", bg: "primary.500" }}>
                   Billing
-                </Tab>
+                </Tab> */}
               </TabList>
               <TabPanels>
                 <TabPanel>
                   <UserSettings />
                 </TabPanel>
-                <TabPanel>
+                {/* <TabPanel>
                   <p>Integrations Here!</p>
                 </TabPanel>
                 <TabPanel>
@@ -47,7 +49,7 @@ export default function Home() {
                 </TabPanel>
                 <TabPanel>
                   <p>Billing Here!</p>
-                </TabPanel>
+                </TabPanel> */}
               </TabPanels>
             </Tabs>
           </Box>
