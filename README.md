@@ -21,24 +21,44 @@ git clone https://github.com/chewableanimal/CS35L-Project.git
 cd coincase
 npm install
 ```
+
+### Firebase:
+Follow step 1 of this tutorial (Create a Firebase project and register your app):
+
+https://firebase.google.com/docs/web/setup#create-firebase-project-and-app
+
+Once your Firebase project is set up, save the configuration data somewhere safe. It'll look something like this:
+
+```
+const firebaseConfig = {
+  apiKey: ...,
+  authDomain: ...,
+  projected: ...,
+  storageBucket: ...,
+  messagingSenderId: ...,
+  appId: ...,
+  measurementId: ...
+};
+```
+
 ### Configuration:
 
-Add a file name .env.local to the root folder using code editor or thorugh terminal with:
+Add a file name .env.local to the root folder using the code editor or through a terminal with:
 
 ```
 touch .env.local
 ```
 
-Copy and paste these values to the .env.local file:
+Copy and paste the corresponding values from your firebaseConfig to the .env.local file:
 
 ```
-NEXT_PUBLIC_FIREBASE_API_KEY="AIzaSyBwLRGK0FwWt3niyJ3Bh-lwUznuxazb70s"
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=coincase-b1337.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=coincase-b1337
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=coincase-b1337.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=335607761170
-NEXT_PUBLIC_FIREBASE_APP_ID=1:335607761170:web:c9fef05998371f549f0bcb
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-NDXYEG7L33
+NEXT_PUBLIC_FIREBASE_API_KEY= ...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN= ...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID= ...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET= ...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID= ...
+NEXT_PUBLIC_FIREBASE_APP_ID= ...
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID= ...
 ```
 
 ## Run the Application:
