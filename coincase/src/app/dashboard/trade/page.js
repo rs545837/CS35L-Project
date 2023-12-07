@@ -67,9 +67,7 @@ export default function trade() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [loading, isLoading] = useState(false);
-
   // User State
-  const [cashInput, setCashInput] = useState("");
   const [balance, setBalance] = useState(0);
   const [wallet, setWallet] = useState();
   const [ticker, setTicker] = useState("");
@@ -311,6 +309,7 @@ export default function trade() {
       setSuccessMsg("Success! Bought " + amountOfCoin + " " + ticker);
       setCryptoSelected(false);
       setTicker("");
+      setSendUpdate(!sendUpdate);
     } catch (e) {
       setIsButtonPressed(true);
       console.error(e);
@@ -435,6 +434,8 @@ export default function trade() {
       setSuccessMsg("Success! Sold " + amountOfCoin + " " + ticker);
       setCryptoSelected(false);
       setTicker("");
+      setSendUpdate(!sendUpdate);
+
     } catch (e) {
       setIsButtonPressed(true);
 
@@ -845,7 +846,7 @@ export default function trade() {
           Transaction History
         </Heading>
       </Center>
-      <TransactionHistoryComponent />
+      <TransactionHistoryComponent key={sendUpdate} />
     </Box>
   );
 }
