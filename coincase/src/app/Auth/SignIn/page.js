@@ -105,9 +105,6 @@ function SignIn() {
       setErrorMsg("Please enter your email and password");
       return;
     }
-    setIsButtonPressed(false);
-    console.log(formData.email);
-    console.log(formData.password);
     signInWithEmailAndPassword(auth, formData.email, formData.password)
       .then((userCredential) => {
         //console.log(userCredential);

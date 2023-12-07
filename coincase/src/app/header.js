@@ -78,7 +78,6 @@ export default function Header() {
               </Button>
             </Link>
 
-            <Link href="/dashboard/home">Home</Link>
             <Link href="/faq">FAQs</Link>
             <Link href="/coins">Coins</Link>
           </Stack>
