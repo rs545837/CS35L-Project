@@ -1,6 +1,8 @@
 # Cryptocurrency Exchange Platform
 Welcome to our Cryptocurrency Exchange Platform project! This platform provides a secure and user-friendly environment for trading cryptocurrencies without the usual market risks.
 
+<img width="1170" alt="Screenshot 2023-12-09 at 8 11 55 AM" src="https://github.com/rs545837/CS35L-Project/assets/114828377/a8abc200-3557-4a9a-ae57-f84d801f4066">
+
 ## Features
 User Authentication: Create accounts via email/password or social login.
 Wallet: View your crypto holdings.
@@ -29,6 +31,7 @@ https://firebase.google.com/docs/web/setup#create-firebase-project-and-app
 
 Once your Firebase project is set up, save the configuration data somewhere safe. It'll look something like this:
 
+
 ```
 const firebaseConfig = {
   apiKey: ...,
@@ -40,6 +43,7 @@ const firebaseConfig = {
   measurementId: ...
 };
 ```
+<img width="1308" alt="Screenshot 2023-12-09 at 8 13 03 AM" src="https://github.com/rs545837/CS35L-Project/assets/114828377/8c84b800-14e8-4dda-a862-c24e22555011">
 
 ### Configuration:
 
